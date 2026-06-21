@@ -1,0 +1,199 @@
+import { useState } from "react";
+import Stepper from "@/components/Stepper";
+import {
+  BookOpen,
+  ClipboardCheck,
+  GraduationCap,
+  Send,
+  User,
+  Users,
+} from "lucide-react";
+import PersonalInfo from "@/steps/PersonalInfo";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { NewLicenseSchema, fieldsByStep } from "@/utils/Schema";
+import LicAcademicInfo from "@/steps/LicAcademicInfo";
+import ParentsInfo from "@/steps/LicParentsInfo";
+import ChooseMajor from "@/steps/NewLicMajor";
+import ReviewSubmit from "@/steps/ReviewSubmit";
+import SubmitSuccess from "@/steps/SubmitSuccess";
+import { internMajors, externMajors } from "@/data/data";
+import { Spinner } from "@/components/ui/spinner";
+
+const baseDefaultValues = {
+  firstName: "",
+  lastName: "",
+  firstNameLatin: "",
+  lastNameLatin: "",
+  gender: "",
+  familyStatus: "",
+  nationality: "",
+  NIN: "",
+  dateOfExpiration: "",
+  dateOfBirth: "",
+  birthCountry: "",
+  birthWillaya: "",
+  birthCommune: "",
+  birthAddress: "",
+  residenceWillaya: "",
+  residenceCommune: "",
+  residenceAddress: "",
+  email: "",
+  phoneNumber1: "",
+  phoneNumber2: "",
+  medicalCondition: "",
+  baccalaureateSeries: "",
+  baccalaureateYear: "",
+  baccalaureateAverage: "",
+  baccalaureateMajor: "",
+  mathematicsMark: "",
+  physicsMark: "",
+  highSchoolName: "",
+  highSchoolType: "",
+  currentUniversity: "",
+  currentUniversityYear: "",
+  currentUniversityMajor: "",
+  fatherFirstName: "",
+  fatherOccupation: "",
+  fatherPhoneNumber: "",
+  fatherEmail: "",
+  motherFirstName: "",
+  motherLastName: "",
+  motherOccupation: "",
+  guardianFullName: "",
+  guardianRelationship: "",
+  guardianEmail: "",
+  guardianPhoneNumber: "",
+  majors: [],
+  language: "",
+};
+
+const NewLicense = ({
+  setIsWelcome,
+  degree,
+  type,
+}: {
+  setIsWelcome: (isWelcome: boolean) => void;
+  degree: string;
+  type: string;
+}) => {
+  const [loading, setLoading] = useState(false);
+  const [current, setCurrent] = useState(0);
+  const defaultValues = { degree, type, ...baseDefaultValues };
+  const STEPS = [
+    { key: "personal", label: "Personal info", Icon: User },
+    { key: "academic", label: "Academic info", Icon: BookOpen },
+    { key: "major", label: "Choose major", Icon: GraduationCap },
+    { key: "parents", label: "Parents info", Icon: Users },
+    { key: "review", label: "Review & submit", Icon: ClipboardCheck },
+  ];
+
+  const form = useForm<any>({
+    defaultValues,
+    mode: "onSubmit",
+    resolver: zodResolver(NewLicenseSchema),
+  });
+
+  const goNext = async () => {
+    console.log(form.getValues());
+    const valid = await form.trigger(fieldsByStep.newLicense[current] as any);
+    if (valid) setCurrent((c) => c + 1);
+  };
+
+  const onSubmit = async (data: any) => {
+    setLoading(true);
+    try {
+      const res = await fetch("http://localhost:5000/api/v1", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        console.log(data);
+        setCurrent((c) => c + 1);
+      } else {
+        console.log(await res.json());
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (current > 4) {
+    return <SubmitSuccess />;
+  }
+
+  console.log(form.formState.errors);
+
+  return (
+    <form onSubmit={form.handleSubmit(onSubmit)}>
+      <div className="flex items-start flex-col px-7 py-5 gap-5">
+        <Stepper current={current} STEPS={STEPS} />
+        {current === 0 && <PersonalInfo form={form} />}
+        {current === 1 && <LicAcademicInfo form={form} />}
+        {current === 2 && (
+          <ChooseMajor
+            form={form}
+            Majors={
+              form.getValues("nationality") === "Algerian - جزائري"
+                ? internMajors
+                : externMajors
+            }
+          />
+        )}
+        {current === 3 && <ParentsInfo form={form} />}
+        {current === 4 && <ReviewSubmit form={form} path="newLicense" />}
+      </div>
+      <div className="px-7 pt-5 pb-6 border-t border-secondary flex items-center justify-between">
+        {current === 0 ? (
+          <button
+            type="button"
+            onClick={() => setIsWelcome(true)}
+            className="border-[1.5px] border-slate-500 hover:border-primary-500 text-slate-500 hover:text-primary-500 text-sm font-medium flex items-center justify-center px-4 py-2.5 rounded-md cursor-pointer"
+          >
+            Back
+          </button>
+        ) : (
+          <button
+            type="button"
+            onClick={() => setCurrent(current - 1)}
+            className="border-[1.5px] border-slate-500 hover:border-primary-500 text-slate-500 hover:text-primary-500 text-sm font-medium flex items-center px-4 py-2.5 rounded-md cursor-pointer transition-all"
+          >
+            Back
+          </button>
+        )}
+
+        {current === 4 ? (
+          <button
+            type="button"
+            onClick={form.handleSubmit(onSubmit)}
+            className="bg-primary-500 hover:bg-primary-600 text-white text-sm font-medium flex items-center px-4 py-2.5 rounded-md cursor-pointer"
+          >
+            {loading ? (
+              <>
+                <Spinner /> Loading
+              </>
+            ) : (
+              <>Submit</>
+            )}
+            <Send size={15} className="ml-2" />
+          </button>
+        ) : (
+          <button
+            type="button"
+            onClick={goNext}
+            className="bg-primary-500 hover:bg-primary-600 text-white text-sm font-medium flex items-center px-4 py-2.5 rounded-md cursor-pointer"
+          >
+            Continue
+          </button>
+        )}
+      </div>
+    </form>
+  );
+};
+
+export default NewLicense;

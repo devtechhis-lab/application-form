@@ -1,0 +1,51 @@
+export const externMajors = [
+  {
+    id: "cs",
+    name: "Computer Science - Computer Systems",
+    language: "English/French",
+    total: "650 000 DA",
+    firstInstallment: "275 000 DA",
+  },
+  {
+    id: "scs",
+    name: "Computer Science - Security of Computer Systems",
+    language: "English/French",
+    total: "650 000 DA",
+    firstInstallment: "275 000 DA",
+  },
+  {
+    id: "ste",
+    name: "Science & Technology - Electronics",
+    language: "English/French",
+    total: "650 000 DA",
+    firstInstallment: "275 000 DA",
+  },
+  {
+    id: "ebm",
+    name: "Economics - Eco & Business Management",
+    language: "English/French/Arabic",
+    total: "485 000 DA",
+    firstInstallment: "242 500 DA",
+  },
+  {
+    id: "cse",
+    name: "Commercial Sciences - E-commerce",
+    language: "English/French/Arabic",
+    total: "485 000 DA",
+    firstInstallment: "242 500 DA",
+  },
+  {
+    id: "cp",
+    name: "Social Sciences - Clinical Psychology",
+    language: "Arabic",
+    total: "410 000 DA",
+    firstInstallment: "205 000 DA",
+  },
+  {
+    id: "pl",
+    name: "Law - Public Law",
+    language: "Arabic",
+    total: "400 000 DA",
+    firstInstallment: "200 000 DA",
+  },
+];
