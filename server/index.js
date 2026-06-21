@@ -9,7 +9,10 @@ dotenv.config();
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: [
+      "http://localhost:5173",
+      "https://application-form-1-y61q.onrender.com",
+    ],
     credentials: true,
   }),
 );

@@ -103,11 +103,14 @@ const NewLicense = ({
   const onSubmit = async (data: any) => {
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:5000/api/v1", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
+      const res = await fetch(
+        "https://application-form-vdtx.onrender.com/api/v1",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        },
+      );
 
       if (res.ok) {
         const data = await res.json();

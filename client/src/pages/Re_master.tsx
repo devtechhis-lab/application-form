@@ -8,6 +8,7 @@ import { ReMasterSchema, fieldsByStep } from "@/utils/Schema";
 import ReviewSubmit from "@/steps/ReviewSubmit";
 import SubmitSuccess from "@/steps/SubmitSuccess";
 import ChooseMajor from "@/steps/ReMasMajor";
+import { Spinner } from "@/components/ui/spinner";
 
 const baseDefaultValues = {
   firstName: "",
@@ -44,6 +45,7 @@ const ReMaster = ({
   degree: string;
   type: string;
 }) => {
+  const [loading, setLoading] = useState(false);
   const [current, setCurrent] = useState(0);
   const defaultValues = { degree, type, ...baseDefaultValues };
   const STEPS = [
@@ -67,12 +69,33 @@ const ReMaster = ({
     // The whole flow is one <form>, so pressing Enter in any input fires this
     // handler from earlier steps too. Only finalize from the review step;
     // otherwise treat it like Continue so we never skip review.
-    if (current < 2) {
-      goNext();
-      return;
+    // if (current < 2) {
+    //   goNext();
+    //   return;
+    // }
+    setLoading(true);
+    try {
+      const res = await fetch(
+        "https://application-form-vdtx.onrender.com/api/v1",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        },
+      );
+
+      if (res.ok) {
+        const data = await res.json();
+        console.log(data);
+        setCurrent((c) => c + 1);
+      } else {
+        console.log(await res.json());
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
     }
-    console.log("Application submitted:", data);
-    setCurrent((c) => c + 1);
   };
 
   if (current > 2) {
@@ -113,7 +136,13 @@ const ReMaster = ({
             onClick={form.handleSubmit(onSubmit)}
             className="bg-primary-500 hover:bg-primary-600 text-white text-sm font-medium flex items-center px-4 py-2.5 rounded-md cursor-pointer"
           >
-            Submit
+            {loading ? (
+              <>
+                <Spinner /> Loading
+              </>
+            ) : (
+              <>Submit</>
+            )}
             <Send size={15} className="ml-2" />
           </button>
         ) : (
