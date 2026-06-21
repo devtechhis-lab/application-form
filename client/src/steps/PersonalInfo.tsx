@@ -362,6 +362,7 @@ const PersonalInfo = ({ form }: { form: any }) => {
                           field.onChange(date);
                           setOpenDateOfExpiration(false);
                         }}
+                        disabled={{ before: new Date() }}
                         captionLayout="dropdown"
                       />
                     </PopoverContent>
@@ -410,6 +411,10 @@ const PersonalInfo = ({ form }: { form: any }) => {
                       field.onChange(date);
                       setOpenDateOfBirth(false);
                     }}
+                    defaultMonth={field.value ?? new Date(2010, 11, 1)}
+                    startMonth={new Date(1900, 0)}
+                    endMonth={new Date(2010, 11)}
+                    disabled={{ after: new Date(2010, 11, 31) }}
                     captionLayout="dropdown"
                   />
                 </PopoverContent>

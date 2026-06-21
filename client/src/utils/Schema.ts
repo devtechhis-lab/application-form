@@ -194,14 +194,15 @@ export const LicParentsInfoSchema = z.object({
     .string()
     .min(10, "Father's Phone Number is required.")
     .regex(/^(\+213|0)(5|6|7)[0-9]{8}$/, "Enter a valid phone number"),
-  fatherEmail: z
-    .string()
-    .email("Invalid email address.")
-    .refine(
-      (email) => !email.toLowerCase().endsWith("@icloud.com"),
-      "iCloud email addresses are not allowed",
-    )
-    .optional(),
+  fatherEmail: z.literal("").or(
+    z
+      .string()
+      .email("Invalid email address.")
+      .refine(
+        (email) => !email.toLowerCase().endsWith("@icloud.com"),
+        "iCloud email addresses are not allowed",
+      ),
+  ),
   motherFirstName: z.string().min(1, "Mother's First Name is required."),
   motherLastName: z.string().min(1, "Mother's Last Name is required."),
   motherOccupation: z.string().optional(),
@@ -296,6 +297,7 @@ const licMajorFields = ["majors", "language"];
 const licParentsFields = [
   "fatherFirstName",
   "fatherPhoneNumber",
+  "fatherEmail",
   "motherFirstName",
   "motherLastName",
   "guardianFullName",

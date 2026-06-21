@@ -11,7 +11,7 @@ function ReviewItem({ k, v, full }: { k: string; v: any; full?: boolean }) {
         ? String(v)
         : "—";
   return (
-    <div className={`${full ? "sm:col-span-2" : ""}`}>
+    <div className={full ? "sm:col-span-2" : undefined}>
       <div className="text-[11px] uppercase tracking-wide text-slate-400">
         {k}
       </div>
@@ -37,7 +37,7 @@ function SectionCard({
           {title}
         </span>
       </div>
-      <div className="grid grid-cols-1 gap-x-5 gap-y-2.5 px-3.5 py-3 sm:grid-cols-2">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-2 sm:gap-x-5 gap-y-2.5 px-3.5 py-3">
         {children}
       </div>
     </div>
@@ -45,7 +45,7 @@ function SectionCard({
 }
 
 const Divider = () => (
-  <span className="w-full h-0.5 bg-secondary rounded-full col-span-2"></span>
+  <span className="w-full h-0.5 bg-secondary rounded-full col-span-1 sm:col-span-2"></span>
 );
 
 function ReviewSubmit({ form, path }: { form: any; path: FormPath }) {
@@ -80,7 +80,7 @@ function ReviewSubmit({ form, path }: { form: any; path: FormPath }) {
         <ReviewItem k="Date of expiration" v={v.dateOfExpiration} />
         <ReviewItem k="Date of Birth" v={v.dateOfBirth} />
         <Divider />
-        <h3 className="text-sm font-medium text-primary-500 col-span-2">
+        <h3 className="col-span-1 sm:col-span-2 text-sm font-medium text-primary-500">
           Place of Birth
         </h3>
         <ReviewItem k="Country" v={v.birthCountry} full />
@@ -97,10 +97,10 @@ function ReviewSubmit({ form, path }: { form: any; path: FormPath }) {
             <ReviewItem k="Commune" v={v.birthCommune} />
           </>
         ) : (
-          <ReviewItem k="Address" v={v.birthAddress} full />
+          <ReviewItem k="Address" v={v.birthAddress} />
         )}
         <Divider />
-        <h3 className="text-sm font-medium text-primary-500 col-span-2">
+        <h3 className="col-span-1 sm:col-span-2 text-sm font-medium text-primary-500">
           Residence Address
         </h3>
         <ReviewItem
@@ -112,7 +112,7 @@ function ReviewSubmit({ form, path }: { form: any; path: FormPath }) {
           }
         />
         <ReviewItem k="Commune" v={v.residenceCommune} />
-        <ReviewItem k="Address" v={v.residenceAddress} full />
+        <ReviewItem k="Address" v={v.residenceAddress} />
         <Divider />
         <ReviewItem k="Email" v={v.email} />
         <ReviewItem k="Phone Number 1" v={v.phoneNumber1} />
@@ -126,7 +126,7 @@ function ReviewSubmit({ form, path }: { form: any; path: FormPath }) {
         <SectionCard icon={<BookOpen size={15} />} title="Academic Info">
           {isLicense && (
             <>
-              <h3 className="text-sm font-medium text-primary-500 col-span-2">
+              <h3 className="col-span-1 sm:col-span-2 text-sm font-medium text-primary-500">
                 Baccalaureate Information
               </h3>
               <ReviewItem k="Register Number" v={v.baccalaureateSeries} />
@@ -140,10 +140,10 @@ function ReviewSubmit({ form, path }: { form: any; path: FormPath }) {
               <Divider />
             </>
           )}
-          <h3 className="text-sm font-medium text-primary-500 col-span-2">
+          <h3 className="col-span-1 sm:col-span-2 text-sm font-medium text-primary-500">
             University Information
           </h3>
-          <ReviewItem k="Current University" v={v.currentUniversity} full />
+          <ReviewItem k="Current University" v={v.currentUniversity} />
           <ReviewItem k="University Year" v={v.currentUniversityYear} />
           <ReviewItem k="University Major" v={v.currentUniversityMajor} />
         </SectionCard>
@@ -155,15 +155,15 @@ function ReviewSubmit({ form, path }: { form: any; path: FormPath }) {
         <SectionCard icon={<Users size={15} />} title="Parental Information">
           {isLicense && (
             <>
-              <h3 className="text-sm font-medium text-primary-500 col-span-2">
+              <h3 className="col-span-1 sm:col-span-2 text-sm font-medium text-primary-500">
                 Father's Information
               </h3>
-              <ReviewItem k="First Name" v={v.fatherFirstName} full />
+              <ReviewItem k="First Name" v={v.fatherFirstName} />
               <ReviewItem k="Occupation" v={v.fatherOccupation} />
               <ReviewItem k="Email" v={v.fatherEmail} />
               <ReviewItem k="Phone Number" v={v.fatherPhoneNumber} />
               <Divider />
-              <h3 className="text-sm font-medium text-primary-500 col-span-2">
+              <h3 className="col-span-1 sm:col-span-2 text-sm font-medium text-primary-500">
                 Mother's Information
               </h3>
               <ReviewItem k="First Name" v={v.motherFirstName} />
@@ -172,21 +172,16 @@ function ReviewSubmit({ form, path }: { form: any; path: FormPath }) {
               <Divider />
             </>
           )}
-          <h3 className="text-sm font-medium text-primary-500 col-span-2">
+          <h3 className="col-span-1 sm:col-span-2 text-sm font-medium text-primary-500">
             Guardian's Information
           </h3>
           <ReviewItem
             k="Full Name of the Person Responsible for Paying Tuition Fees"
             v={v.guardianFullName}
-            full
           />
-          <ReviewItem
-            k="Relationship to Student"
-            v={v.guardianRelationship}
-            full
-          />
+          <ReviewItem k="Relationship to Student" v={v.guardianRelationship} />
           {/* Guardian address is only collected on the master path. */}
-          {!isLicense && <ReviewItem k="Address" v={v.guardianAddress} full />}
+          {!isLicense && <ReviewItem k="Address" v={v.guardianAddress} />}
           <ReviewItem k="Email" v={v.guardianEmail} />
           <ReviewItem k="Phone Number" v={v.guardianPhoneNumber} />
         </SectionCard>
@@ -195,12 +190,10 @@ function ReviewSubmit({ form, path }: { form: any; path: FormPath }) {
       {/* Chosen majors — every path. New paths rank two; re paths pick one. */}
       <SectionCard icon={<GraduationCap size={15} />} title="Chosen Majors">
         {majors.length === 0 ? (
-          <div className="text-sm text-slate-500 sm:col-span-2">
-            No majors selected.
-          </div>
+          <div className="text-sm text-slate-500">No majors selected.</div>
         ) : (
           majors.map((id, index) => (
-            <div key={id} className="sm:col-span-2 flex items-center gap-2.5">
+            <div key={id} className="flex items-center gap-2.5">
               <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#1e3c73] text-[11px] font-semibold text-white">
                 {index + 1}
               </span>
@@ -210,7 +203,7 @@ function ReviewSubmit({ form, path }: { form: any; path: FormPath }) {
             </div>
           ))
         )}
-        {v.language && <ReviewItem k="Language of Study" v={v.language} full />}
+        {v.language && <ReviewItem k="Language of Study" v={v.language} />}
       </SectionCard>
     </div>
   );
