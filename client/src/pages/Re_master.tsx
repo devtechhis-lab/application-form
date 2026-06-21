@@ -101,7 +101,6 @@ const ReMaster = ({
   if (current > 2) {
     return <SubmitSuccess />;
   }
-
   return (
     <form onSubmit={form.handleSubmit(onSubmit)}>
       <div className="flex items-start flex-col px-7 py-5 gap-5">

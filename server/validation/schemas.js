@@ -150,12 +150,19 @@ const NewMajorSchema = z.object({
   majors: z.array(z.string()).length(2, "Please select two majors."),
 });
 
-const ReMajorSchema = z
+// Re-registration (license): exactly one major; language required for some.
+const ReLicMajorSchema = z
   .object({
     majors: z.array(z.string()).length(1, "Please select one major."),
     language: z.string().optional(),
   })
   .superRefine(languageRefine);
+
+// Re-registration (master): exactly one major; language never required.
+const ReMasMajorSchema = z.object({
+  majors: z.array(z.string()).length(1, "Please select one major."),
+  language: z.string().optional(),
+});
 
 /* -------------------------------- Parents -------------------------------- */
 
@@ -199,9 +206,9 @@ const NewMasterSchema = PersonalInfoSchema.and(MasAcademicInfoSchema)
   .and(NewMajorSchema)
   .and(MasParentsInfoSchema);
 
-const ReLicenseSchema = PersonalInfoSchema.and(ReMajorSchema);
+const ReLicenseSchema = PersonalInfoSchema.and(ReLicMajorSchema);
 
-const ReMasterSchema = PersonalInfoSchema.and(ReMajorSchema);
+const ReMasterSchema = PersonalInfoSchema.and(ReMasMajorSchema);
 
 /**
  * Resolves the schema for an incoming request from its `type` + `degree`.

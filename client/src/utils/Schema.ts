@@ -169,8 +169,8 @@ export const NewMajorSchema = z.object({
     .default([]),
 });
 
-// Re-registration: exactly one major.
-export const ReMajorSchema = z
+// Re-registration (license): exactly one major; language required for some.
+export const ReLicMajorSchema = z
   .object({
     majors: z
       .array(z.string())
@@ -179,6 +179,12 @@ export const ReMajorSchema = z
     language: z.string().optional(),
   })
   .superRefine(languageRefine);
+
+// Re-registration (master): exactly one major; language never required.
+export const ReMasMajorSchema = z.object({
+  majors: z.array(z.string()).length(1, "Please select one major.").default([]),
+  language: z.string().optional(),
+});
 
 // Full parents step (license): father + mother + guardian.
 export const LicParentsInfoSchema = z.object({
@@ -238,9 +244,9 @@ export const NewMasterSchema = PersonalInfoSchema.and(MasAcademicInfoSchema)
   .and(NewMajorSchema)
   .and(MasParentsInfoSchema);
 
-export const ReLicenseSchema = PersonalInfoSchema.and(ReMajorSchema);
+export const ReLicenseSchema = PersonalInfoSchema.and(ReLicMajorSchema);
 
-export const ReMasterSchema = PersonalInfoSchema.and(ReMajorSchema);
+export const ReMasterSchema = PersonalInfoSchema.and(ReMasMajorSchema);
 
 /* -------------------------------------------------------------------------- */
 /*  Per-step field lists (used by form.trigger to validate one step)          */
