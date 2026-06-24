@@ -106,9 +106,9 @@ function ReviewSubmit({ form, path }: { form: any; path: FormPath }) {
         <ReviewItem
           k="Willaya"
           v={
-            address[parseInt(v.birthWillaya) - 1].nameFr +
+            address[parseInt(v.residenceWillaya) - 1].nameFr +
             " - " +
-            address[parseInt(v.birthWillaya) - 1].nameAr
+            address[parseInt(v.residenceWillaya) - 1].nameAr
           }
         />
         <ReviewItem k="Commune" v={v.residenceCommune} />

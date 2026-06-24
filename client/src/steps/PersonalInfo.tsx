@@ -362,6 +362,8 @@ const PersonalInfo = ({ form }: { form: any }) => {
                           field.onChange(date);
                           setOpenDateOfExpiration(false);
                         }}
+                        startMonth={new Date()}
+                        endMonth={new Date(new Date().getFullYear() + 20, 11)}
                         disabled={{ before: new Date() }}
                         captionLayout="dropdown"
                       />

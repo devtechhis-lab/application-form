@@ -1,9 +1,8 @@
 import { sheets } from "../index.js";
 import { schemaForVariant } from "../validation/schemas.js";
-import { PDFDocument } from "pdf-lib";
-import fs from "fs";
 import addresses from "../data/addresses.json" with { type: "json" };
 import { externMajors } from "../data/data.js";
+import { generateLicensePdf } from "../services/pdf/licensePdf.js";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -11,6 +10,22 @@ dotenv.config();
 // it isn't found so we never lose the raw value.
 const majorIdToName = new Map(externMajors.map((m) => [m.id, m.name]));
 const majorName = (id) => (id == null ? null : (majorIdToName.get(id) ?? id));
+
+// Format a date value as "YYYY-MM-DD", returning "" for empty/invalid input so
+// optional dates (e.g. dateOfExpiration) don't throw "Invalid time value".
+//
+// A date-only string ("2026-06-23") is the day the user actually picked, so it
+// is returned as-is. Passing it through `new Date(...).toISOString()` would
+// reinterpret it as UTC midnight and could shift the day, which is the bug we
+// are guarding against; only full timestamps fall through to Date parsing.
+const formatDate = (value) => {
+  if (!value) return "";
+  if (typeof value === "string" && /^\d{4}-\d{2}-\d{2}$/.test(value)) {
+    return value;
+  }
+  const d = new Date(value);
+  return Number.isNaN(d.getTime()) ? "" : d.toISOString().split("T")[0];
+};
 
 export const newRegistration = async (req, res) => {
   // Pick the validation schema based on the registration variant.
@@ -89,48 +104,13 @@ export const newRegistration = async (req, res) => {
     language,
   } = parsed.data;
 
+  console.log(dateOfBirth);
+
   try {
     if (type === "newRegistration" && degree === "license") {
-      // const pdfBytes = fs.readFileSync("form.pdf");
+      // await generateLicensePdf(parsed.data);
 
-      // const pdfDoc = await PDFDocument.load(pdfBytes);
-
-      // const form = pdfDoc.getForm();
-
-      // form.getTextField("firstName").setText(firstName);
-      // form.getTextField("lastName").setText(lastName);
-      // form.getTextField("firstNameLatin").setText(firstNameLatin);
-      // form.getTextField("lastNameLatin").setText(lastNameLatin);
-      // form.getTextField("nationality").setText(nationality);
-      // form.getTextField("NIN").setText(NIN);
-      // form.getTextField("dateOfExpiration").setText(dateOfExpiration);
-      // form.getTextField("residenceCountry").setText("Algeria");
-      // form.getTextField("residenceWilaya").setText(residenceWillaya);
-      // form.getTextField("email").setText(email);
-      // form.getTextField("phoneNumber1").setText(phoneNumber1);
-      // form.getTextField("phoneNumber2").setText(phoneNumber2);
-      // form.getTextField("fatherName").setText(fatherFirstName);
-      // form.getTextField("fatherOccupation").setText(fatherOccupation);
-      // form
-      //   .getTextField("motherFullName")
-      //   .setText(motherFirstName + " " + motherLastName);
-      // form.getTextField("motherOccupation").setText(motherOccupation);
-      // form.getTextField("fatherEmail").setText(fatherEmail);
-      // form.getTextField("fatherPhoneNumber").setText(fatherPhoneNumber);
-      // form.getTextField("medicalCondition").setText(medicalCondition);
-      // form.getTextField("bac").setText("Baccaluareate");
-      // form.getTextField("highSchoolName").setText(highSchoolName);
-      // form.getTextField("bacYear").setText(baccalaureateYear);
-      // form.getTextField("bacResult").setText(baccalaureateAverage);
-      // form.getTextField("highSchoolType").setText(highSchoolType);
-      // form.getTextField("bacSeries").setText(baccalaureateSeries);
-      // form.getTextField("currentUniversity").setText(currentUniversity);
-      // form.getTextField("currentMajor").setText(currentUniversityMajor);
-      // form.getTextField("currentYear").setText(currentUniversityYear);
-
-      // const result = await pdfDoc.save();
-
-      // fs.writeFileSync("filled.pdf", result);
+      // throw new Error("PDF generation is not yet implemented in the backend.");
 
       await sheets.spreadsheets.values.append({
         spreadsheetId: process.env.SHEET_ID,
@@ -150,14 +130,14 @@ export const newRegistration = async (req, res) => {
               familyStatus,
               nationality,
               NIN,
-              new Date(dateOfExpiration).toISOString().split("T")[0],
-              new Date(dateOfBirth).toISOString().split("T")[0],
+              formatDate(dateOfExpiration),
+              formatDate(dateOfBirth),
               birthCountry,
-              addresses[birthWillaya - 1].nameAr +
-                " " +
-                "-" +
-                " " +
-                addresses[birthWillaya - 1].nameFr,
+              birthCountry === "Algeria - الجزائر"
+                ? addresses[birthWillaya - 1].nameAr +
+                  " - " +
+                  addresses[birthWillaya - 1].nameFr
+                : "",
               birthCommune,
               birthAddress,
               addresses[residenceWillaya - 1].nameAr +
@@ -203,6 +183,10 @@ export const newRegistration = async (req, res) => {
       });
     }
     if (type === "reRegistration" && degree === "license") {
+      // await generateLicensePdf(parsed.data);
+
+      // throw new Error("PDF generation is not yet implemented in the backend.");
+
       await sheets.spreadsheets.values.append({
         spreadsheetId: process.env.SHEET_ID,
         range: "Sheet6!A:D",
@@ -220,21 +204,22 @@ export const newRegistration = async (req, res) => {
               gender,
               familyStatus,
               nationality,
-              NIN,
-              new Date(dateOfExpiration).toISOString().split("T")[0],
-              new Date(dateOfBirth).toISOString().split("T")[0],
+              nationality === "Algerian - جزائري" ? NIN : null,
+              nationality === "Algerian - جزائري"
+                ? formatDate(dateOfExpiration)
+                : null,
+              formatDate(dateOfBirth),
               birthCountry,
-              addresses[birthWillaya - 1].nameAr +
-                " " +
-                "-" +
-                " " +
-                addresses[birthWillaya - 1].nameFr,
-              birthCommune,
-              birthAddress,
+              birthCountry === "Algeria - الجزائر"
+                ? addresses[birthWillaya - 1].nameAr +
+                  " - " +
+                  addresses[birthWillaya - 1].nameFr
+                : "",
+              birthCountry === "Algeria - الجزائر" ? birthCommune : "",
+              birthCountry === "Algeria - الجزائر" ? birthAddress : "",
+
               addresses[residenceWillaya - 1].nameAr +
-                " " +
-                "-" +
-                " " +
+                " - " +
                 addresses[residenceWillaya - 1].nameFr,
               residenceCommune,
               residenceAddress,
@@ -292,8 +277,8 @@ export const newRegistration = async (req, res) => {
               familyStatus,
               nationality,
               NIN,
-              new Date(dateOfExpiration).toISOString().split("T")[0],
-              new Date(dateOfBirth).toISOString().split("T")[0],
+              formatDate(dateOfExpiration),
+              formatDate(dateOfBirth),
               birthCountry,
               addresses[birthWillaya - 1].nameAr +
                 " " +
@@ -363,8 +348,8 @@ export const newRegistration = async (req, res) => {
               familyStatus,
               nationality,
               NIN,
-              new Date(dateOfExpiration).toISOString().split("T")[0],
-              new Date(dateOfBirth).toISOString().split("T")[0],
+              formatDate(dateOfExpiration),
+              formatDate(dateOfBirth),
               birthCountry,
               addresses[birthWillaya - 1].nameAr +
                 " " +

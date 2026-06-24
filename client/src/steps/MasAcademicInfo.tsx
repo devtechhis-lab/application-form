@@ -62,7 +62,6 @@ const AcademicInfo = ({ form }: { form: any }) => {
               >
                 <FieldLabel className="text-xs font-medium text-slate-500 gap-0">
                   Current University Year
-                  <span className="text-red-500 ml-0.5">*</span>
                 </FieldLabel>
                 <Select
                   name={field.name}
@@ -73,7 +72,7 @@ const AcademicInfo = ({ form }: { form: any }) => {
                     aria-invalid={fieldState.invalid}
                     className="input"
                   >
-                    <SelectValue placeholder="Select Your Gender" />
+                    <SelectValue placeholder="Select Your University Year" />
                   </SelectTrigger>
                   <SelectContent className="p-3" position="item-aligned">
                     {universityYear.map((y, i) => {

@@ -12,6 +12,7 @@ import PersonalInfo from "@/steps/PersonalInfo";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { NewLicenseSchema, fieldsByStep } from "@/utils/Schema";
+import { normalizeFormDates } from "@/utils/date";
 import LicAcademicInfo from "@/steps/LicAcademicInfo";
 import ParentsInfo from "@/steps/LicParentsInfo";
 import ChooseMajor from "@/steps/NewLicMajor";
@@ -95,7 +96,6 @@ const NewLicense = ({
   });
 
   const goNext = async () => {
-    console.log(form.getValues());
     const valid = await form.trigger(fieldsByStep.newLicense[current] as any);
     if (valid) setCurrent((c) => c + 1);
   };
@@ -108,13 +108,13 @@ const NewLicense = ({
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(data),
+          body: JSON.stringify(normalizeFormDates(data)),
         },
       );
 
       if (res.ok) {
         const data = await res.json();
-        console.log(data);
+
         setCurrent((c) => c + 1);
       } else {
         console.log(await res.json());
@@ -129,8 +129,6 @@ const NewLicense = ({
   if (current > 4) {
     return <SubmitSuccess />;
   }
-
-  console.log(form.formState.errors);
 
   return (
     <form onSubmit={form.handleSubmit(onSubmit)}>

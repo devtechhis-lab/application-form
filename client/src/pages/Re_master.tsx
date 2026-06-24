@@ -5,6 +5,7 @@ import PersonalInfo from "@/steps/PersonalInfo";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ReMasterSchema, fieldsByStep } from "@/utils/Schema";
+import { normalizeFormDates } from "@/utils/date";
 import ReviewSubmit from "@/steps/ReviewSubmit";
 import SubmitSuccess from "@/steps/SubmitSuccess";
 import ChooseMajor from "@/steps/ReMasMajor";
@@ -80,7 +81,7 @@ const ReMaster = ({
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(data),
+          body: JSON.stringify(normalizeFormDates(data)),
         },
       );
 

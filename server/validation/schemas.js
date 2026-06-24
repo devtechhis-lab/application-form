@@ -9,7 +9,11 @@ import { z } from "zod";
 
 const ALGERIAN_NATIONALITY = "Algerian - جزائري";
 const ALGERIA_COUNTRY = "Algeria - الجزائر";
-const LANGUAGE_REQUIRED_MAJORS = ["cs", "scs", "ste"];
+const LANGUAGE_REQUIRED_MAJORS = ["cs", "scs", "ste", "ebm", "cse"];
+const NEW_MAS_LANGUAGE_REQUIRED_MAJORS = ["csd", "csc", "esb"];
+const RE_MAS_LANGUAGE_REQUIRED_MAJORS = ["cs", "scs", "ebm"];
+// High school name is only required for public/private schools.
+const HIGH_SCHOOL_NAME_REQUIRED_TYPES = ["public - حكومية", "private - خاصة"];
 
 const phoneRegex = /^(\+213|0)(5|6|7)[0-9]{8}$/;
 
@@ -107,35 +111,48 @@ const PersonalInfoSchema = z
 
 /* ------------------------------- Academic -------------------------------- */
 
-const LicAcademicInfoSchema = z.object({
-  baccalaureateSeries: z
-    .string()
-    .min(1, "Baccalaureate Register Number is required."),
-  baccalaureateYear: z.string().min(1, "Baccalaureate Year is required."),
-  baccalaureateAverage: z.string().min(1, "Baccalaureate Average is required."),
-  baccalaureateMajor: z.string().min(1, "Baccalaureate Major is required."),
-  mathematicsMark: z.string().min(1, "Mathematics Mark is required."),
-  physicsMark: z.string().min(1, "Physics Mark is required."),
-  highSchoolName: z.string().min(1, "High School Name is required."),
-  highSchoolType: z.string().min(1, "High School Type is required."),
+const LicAcademicInfoSchema = z
+  .object({
+    baccalaureateSeries: z
+      .string()
+      .min(1, "Baccalaureate Register Number is required."),
+    baccalaureateYear: z.string().min(1, "Baccalaureate Year is required."),
+    baccalaureateAverage: z
+      .string()
+      .min(1, "Baccalaureate Average is required."),
+    baccalaureateMajor: z.string().min(1, "Baccalaureate Major is required."),
+    mathematicsMark: z.string().min(1, "Mathematics Mark is required."),
+    physicsMark: z.string().min(1, "Physics Mark is required."),
+    highSchoolName: z.string().optional(),
+    highSchoolType: z.string().min(1, "High School Type is required."),
+    currentUniversity: z.string().optional(),
+    currentUniversityYear: z.string().optional(),
+    currentUniversityMajor: z.string().optional(),
+  })
+  .superRefine((data, ctx) => {
+    if (
+      HIGH_SCHOOL_NAME_REQUIRED_TYPES.includes(data.highSchoolType) &&
+      !data.highSchoolName
+    ) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["highSchoolName"],
+        message: "High School Name is required.",
+      });
+    }
+  });
+
+const MasAcademicInfoSchema = z.object({
   currentUniversity: z.string().optional(),
   currentUniversityYear: z.string().optional(),
   currentUniversityMajor: z.string().optional(),
 });
 
-const MasAcademicInfoSchema = z.object({
-  currentUniversity: z.string().optional(),
-  currentUniversityYear: z
-    .string()
-    .min(1, "Current University Year is required."),
-  currentUniversityMajor: z.string().optional(),
-});
-
 /* -------------------------------- Majors --------------------------------- */
 
-const languageRefine = (data, ctx) => {
+const makeLanguageRefine = (languageRequiredMajors) => (data, ctx) => {
   const needsLanguage = (data.majors ?? []).some((id) =>
-    LANGUAGE_REQUIRED_MAJORS.includes(id),
+    languageRequiredMajors.includes(id),
   );
   if (needsLanguage && !data.language) {
     ctx.addIssue({
@@ -146,9 +163,23 @@ const languageRefine = (data, ctx) => {
   }
 };
 
-const NewMajorSchema = z.object({
-  majors: z.array(z.string()).length(2, "Please select two majors."),
-});
+const languageRefine = makeLanguageRefine(LANGUAGE_REQUIRED_MAJORS);
+
+// New registration (license): exactly two majors; language required for some.
+const NewMajorSchema = z
+  .object({
+    majors: z.array(z.string()).length(2, "Please select two majors."),
+    language: z.string().optional(),
+  })
+  .superRefine(languageRefine);
+
+// New registration (master): exactly two majors; language required for some.
+const NewMasMajorSchema = z
+  .object({
+    majors: z.array(z.string()).length(2, "Please select two majors."),
+    language: z.string().optional(),
+  })
+  .superRefine(makeLanguageRefine(NEW_MAS_LANGUAGE_REQUIRED_MAJORS));
 
 // Re-registration (license): exactly one major; language required for some.
 const ReLicMajorSchema = z
@@ -158,11 +189,13 @@ const ReLicMajorSchema = z
   })
   .superRefine(languageRefine);
 
-// Re-registration (master): exactly one major; language never required.
-const ReMasMajorSchema = z.object({
-  majors: z.array(z.string()).length(1, "Please select one major."),
-  language: z.string().optional(),
-});
+// Re-registration (master): exactly one major; language required for some.
+const ReMasMajorSchema = z
+  .object({
+    majors: z.array(z.string()).length(1, "Please select one major."),
+    language: z.string().optional(),
+  })
+  .superRefine(makeLanguageRefine(RE_MAS_LANGUAGE_REQUIRED_MAJORS));
 
 /* -------------------------------- Parents -------------------------------- */
 
@@ -173,7 +206,7 @@ const LicParentsInfoSchema = z.object({
     .string()
     .min(10, "Father's Phone Number is required.")
     .regex(phoneRegex, "Enter a valid phone number"),
-  fatherEmail: optionalEmail.optional(),
+  fatherEmail: z.literal("").or(optionalEmail),
   motherFirstName: z.string().min(1, "Mother's First Name is required."),
   motherLastName: z.string().min(1, "Mother's Last Name is required."),
   motherOccupation: z.string().optional(),
@@ -203,7 +236,7 @@ const NewLicenseSchema = PersonalInfoSchema.and(LicAcademicInfoSchema)
   .and(LicParentsInfoSchema);
 
 const NewMasterSchema = PersonalInfoSchema.and(MasAcademicInfoSchema)
-  .and(NewMajorSchema)
+  .and(NewMasMajorSchema)
   .and(MasParentsInfoSchema);
 
 const ReLicenseSchema = PersonalInfoSchema.and(ReLicMajorSchema);

@@ -12,6 +12,7 @@ import PersonalInfo from "@/steps/PersonalInfo";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { NewMasterSchema, fieldsByStep } from "@/utils/Schema";
+import { normalizeFormDates } from "@/utils/date";
 import ReviewSubmit from "@/steps/ReviewSubmit";
 import SubmitSuccess from "@/steps/SubmitSuccess";
 import MasAcademicInfo from "@/steps/MasAcademicInfo";
@@ -98,7 +99,7 @@ const NewMaster = ({
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(data),
+          body: JSON.stringify(normalizeFormDates(data)),
         },
       );
 

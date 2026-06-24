@@ -10,7 +10,13 @@ import {
 } from "@/components/ui/select";
 import { bacMajor, hsType, universityYear } from "@/data/data";
 
+// High school name is only required for public/private schools.
+const HIGH_SCHOOL_NAME_REQUIRED_TYPES = ["public - حكومية", "private - خاصة"];
+
 const AcademicInfo = ({ form }: { form: any }) => {
+  const highSchoolNameRequired = HIGH_SCHOOL_NAME_REQUIRED_TYPES.includes(
+    form.watch("highSchoolType"),
+  );
   return (
     <div className="w-full flex flex-col gap-4">
       <div className="flex flex-col">
@@ -85,9 +91,6 @@ const AcademicInfo = ({ form }: { form: any }) => {
                         <SelectValue placeholder="Select Your Baccalaureate Year" />
                       </SelectTrigger>
                       <SelectContent className="p-3" position="item-aligned">
-                        <SelectItem key="1" value="2005">
-                          2005
-                        </SelectItem>
                         <SelectItem key="2" value="2006">
                           2006
                         </SelectItem>
@@ -317,7 +320,9 @@ const AcademicInfo = ({ form }: { form: any }) => {
                   >
                     <FieldLabel className="text-xs font-medium text-slate-500 gap-0">
                       High School Name
-                      <span className="text-red-500 ml-0.5">*</span>
+                      {highSchoolNameRequired && (
+                        <span className="text-red-500 ml-0.5">*</span>
+                      )}
                     </FieldLabel>
 
                     <Input
@@ -428,7 +433,6 @@ const AcademicInfo = ({ form }: { form: any }) => {
                   >
                     <FieldLabel className="text-xs font-medium text-slate-500 gap-0">
                       Current University Year
-                      <span className="text-red-500 ml-0.5">*</span>
                     </FieldLabel>
                     <Select
                       name={field.name}

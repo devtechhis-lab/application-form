@@ -1,5 +1,13 @@
-import { FieldError } from "@/components/ui/field";
+import { Controller } from "react-hook-form";
+import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import MajorCard from "@/components/MajorCard";
+import {
+  SelectTrigger,
+  Select,
+  SelectValue,
+  SelectItem,
+  SelectContent,
+} from "@/components/ui/select";
 import { Trophy } from "lucide-react";
 import RankPanel from "@/components/RankPanel";
 
@@ -42,6 +50,7 @@ const MAJORS = [
   },
 ];
 const MAX_CHOICES = 1;
+const LANGUAGE_MAJORS = ["cs", "scs", "ebm"];
 
 const ReMasMajor = ({ form }: { form: any }) => {
   const selectedIds: string[] = form.watch("majors") ?? [];
@@ -86,6 +95,50 @@ const ReMasMajor = ({ form }: { form: any }) => {
 
         {form.formState.errors.majors && (
           <FieldError errors={[form.formState.errors.majors]} />
+        )}
+
+        {selectedIds.some((id) => LANGUAGE_MAJORS.includes(id)) && (
+          <Controller
+            name="language"
+            control={form.control}
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid} className="flex-1">
+                <FieldLabel className="text-xs font-medium text-slate-500 gap-0">
+                  Language of Study
+                  <span className="text-red-500 ml-0.5">*</span>
+                </FieldLabel>
+                <Select
+                  name={field.name}
+                  value={field.value}
+                  onValueChange={field.onChange}
+                >
+                  <SelectTrigger
+                    aria-invalid={fieldState.invalid}
+                    className="input"
+                  >
+                    <SelectValue
+                      className="placeholder:text-slate-400"
+                      placeholder="Select Language of Study"
+                    />
+                  </SelectTrigger>
+                  <SelectContent className="p-3" position="item-aligned">
+                    <SelectItem key="1" value="english - إنجليزية">
+                      English
+                    </SelectItem>
+                    <SelectItem key="2" value="french - فرنسية">
+                      French
+                    </SelectItem>
+                    <SelectItem key="3" value="arabic - العربية">
+                      Arabic
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+                {fieldState.invalid && (
+                  <FieldError errors={[fieldState.error]} />
+                )}
+              </Field>
+            )}
+          />
         )}
       </div>
 

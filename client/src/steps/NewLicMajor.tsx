@@ -63,7 +63,7 @@ import RankPanel from "@/components/RankPanel";
 //   },
 // ];
 const MAX_CHOICES = 2;
-const LANGUAGE_MAJORS = ["cs", "scs", "ste"];
+const LANGUAGE_MAJORS = ["cs", "scs", "ste", "ebm", "cse"];
 
 interface Major {
   id: string;
@@ -148,6 +148,9 @@ const ChooseMajor = ({ form, Majors }: { form: any; Majors: Major[] }) => {
                     </SelectItem>
                     <SelectItem key="2" value="french - فرنسية">
                       French
+                    </SelectItem>
+                    <SelectItem key="3" value="arabic - العربية">
+                      Arabic
                     </SelectItem>
                   </SelectContent>
                 </Select>

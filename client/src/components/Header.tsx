@@ -9,7 +9,7 @@ const Header = ({ isWelcome }: { isWelcome: boolean }) => {
         </div>
         <div className="flex flex-col items-start justify-between">
           <h1 className="text-xl font-medium leading-tight text-white">
-            High Institute of Science
+            HIGHER INSTITUTE OF SCIENCES
           </h1>
           <p className="text-[12px] text-secondary">
             University Registration 2026/2027

@@ -1,47 +1,56 @@
-import { FieldError } from "@/components/ui/field";
+import { Controller } from "react-hook-form";
+import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import MajorCard from "@/components/MajorCard";
+import {
+  SelectTrigger,
+  Select,
+  SelectValue,
+  SelectItem,
+  SelectContent,
+} from "@/components/ui/select";
 import { Trophy } from "lucide-react";
 import RankPanel from "@/components/RankPanel";
 
 const MAJORS = [
   {
-    id: "cs",
+    id: "csd",
     name: "Computer Science - Data Engineering and Web Technology",
     language: "French",
-    total: "550 000 DA",
-    firstInstallment: "275 000 DA",
+    total: "525 000 DA",
+    firstInstallment: "265 000 DA",
   },
   {
-    id: "scs",
+    id: "csc",
     name: "Computer Science - CyberSecurity",
     language: "French",
-    total: "550 000 DA",
-    firstInstallment: "275 000 DA",
+    total: "520 000 DA",
+    firstInstallment: "265 000 DA",
   },
 
   {
-    id: "ebm",
+    id: "esb",
     name: "Economic Science - Business Administration",
     language: "French/Arabic",
-    total: "485 000 DA",
-    firstInstallment: "242 500 DA",
+    total: "445 000 DA",
+    firstInstallment: "225 500 DA",
   },
   {
-    id: "cp",
+    id: "esg",
     name: "Education Science - Guidance and Orientation",
     language: "Arabic",
-    total: "410 000 DA",
-    firstInstallment: "205 000 DA",
+    total: "385 000 DA",
+    firstInstallment: "192 000 DA",
   },
   {
     id: "pl",
     name: "Law - Business Law",
     language: "Arabic",
-    total: "400 000 DA",
-    firstInstallment: "200 000 DA",
+    total: "385 000 DA",
+    firstInstallment: "192 000 DA",
   },
 ];
 const MAX_CHOICES = 2;
+const LANGUAGE_MAJORS = ["csd", "csc", "esb"];
 
 const ChooseMajor = ({ form }: { form: any }) => {
   const selectedIds: string[] = form.watch("majors") ?? [];
@@ -86,6 +95,50 @@ const ChooseMajor = ({ form }: { form: any }) => {
 
         {form.formState.errors.majors && (
           <FieldError errors={[form.formState.errors.majors]} />
+        )}
+
+        {selectedIds.some((id) => LANGUAGE_MAJORS.includes(id)) && (
+          <Controller
+            name="language"
+            control={form.control}
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid} className="flex-1">
+                <FieldLabel className="text-xs font-medium text-slate-500 gap-0">
+                  Language of Study
+                  <span className="text-red-500 ml-0.5">*</span>
+                </FieldLabel>
+                <Select
+                  name={field.name}
+                  value={field.value}
+                  onValueChange={field.onChange}
+                >
+                  <SelectTrigger
+                    aria-invalid={fieldState.invalid}
+                    className="input"
+                  >
+                    <SelectValue
+                      className="placeholder:text-slate-400"
+                      placeholder="Select Language of Study"
+                    />
+                  </SelectTrigger>
+                  <SelectContent className="p-3" position="item-aligned">
+                    <SelectItem key="1" value="english - إنجليزية">
+                      English
+                    </SelectItem>
+                    <SelectItem key="2" value="french - فرنسية">
+                      French
+                    </SelectItem>
+                    <SelectItem key="3" value="arabic - العربية">
+                      Arabic
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+                {fieldState.invalid && (
+                  <FieldError errors={[fieldState.error]} />
+                )}
+              </Field>
+            )}
+          />
         )}
       </div>
 
