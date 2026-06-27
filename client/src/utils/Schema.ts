@@ -28,6 +28,8 @@ export type WelcomeErrors = {
 // Algerian nationality value used across the form (stored in arabic).
 const ALGERIAN_NATIONALITY = "Algerian - جزائري";
 const ALGERIA_COUNTRY = "Algeria - الجزائر";
+// Medical condition value that prompts a free-text description.
+const OTHER_MEDICAL_CONDITION = "Other - أخر";
 // Major ids that require choosing a language of study (license).
 const LANGUAGE_REQUIRED_MAJORS = ["cs", "scs", "ste"];
 // Major ids that require choosing a language of study (new master).
@@ -68,14 +70,29 @@ export const PersonalInfoSchema = z
     phoneNumber1: z
       .string()
       .min(2, "Phone number is required.")
-      .regex(/^(\+213|0)(5|6|7)[0-9]{8}$/, "Enter a valid phone number"),
+      .regex(/^\+?[0-9\s\-()]{7,20}$/, "Enter a valid phone number"),
     phoneNumber2: z
       .string()
       .min(2, "Phone number 2 is required.")
-      .regex(/^(\+213|0)(5|6|7)[0-9]{8}$/, "Enter a valid phone number"),
+      .regex(/^\+?[0-9\s\-()]{7,20}$/, "Enter a valid phone number"),
     medicalCondition: z.string().min(2, "Medical Condition is required."),
+    medicalConditionOther: z.string().optional(),
   })
   .superRefine((data, ctx) => {
+    // When "Other" is selected the applicant must describe their condition.
+    if (data.medicalCondition === OTHER_MEDICAL_CONDITION) {
+      if (
+        !data.medicalConditionOther ||
+        data.medicalConditionOther.length < 2
+      ) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["medicalConditionOther"],
+          message: "Please describe your medical condition.",
+        });
+      }
+    }
+
     // Algerians must provide a NIN and its expiration date.
     if (data.nationality === ALGERIAN_NATIONALITY) {
       if (!data.NIN || data.NIN.length < 2) {
@@ -125,40 +142,64 @@ export const PersonalInfoSchema = z
 // baccalaureate libre or BAC ONEFD candidates.
 const HIGH_SCHOOL_NAME_REQUIRED_TYPES = ["public - حكومية", "private - خاصة"];
 
+// Equivalence Certificate holders did not sit the Algerian baccalaureate, so
+// the bac-specific fields are not collected/required for them.
+const EQUIVALENCE_BAC_MAJOR = "EQUIVALENCE - شهادة معادلة";
+
 // Full academic step (license): baccalaureate details + optional university info.
 export const LicAcademicInfoSchema = z
   .object({
-    baccalaureateSeries: z
-      .string()
-      .min(1, "Baccalaureate Register Number is required."),
-    baccalaureateYear: z.string().min(1, "Baccalaureate Year is required."),
-    baccalaureateAverage: z
-      .string()
-      .min(1, "Baccalaureate Average is required."),
+    baccalaureateSeries: z.string().optional(),
+    baccalaureateYear: z.string().optional(),
+    baccalaureateAverage: z.string().optional(),
     baccalaureateMajor: z.string().min(1, "Baccalaureate Major is required."),
-    mathematicsMark: z.string().min(1, "Mathematics Mark is required."),
-    physicsMark: z.string().min(1, "Physics Mark is required."),
+    mathematicsMark: z.string().optional(),
+    physicsMark: z.string().optional(),
     highSchoolName: z.string().optional(),
-    highSchoolType: z.string().min(1, "High School Type is required."),
+    highSchoolType: z.string().optional(),
     currentUniversity: z.string().optional(),
     currentUniversityYear: z.string().optional(),
     currentUniversityMajor: z.string().optional(),
   })
   .superRefine((data, ctx) => {
-    if (
-      HIGH_SCHOOL_NAME_REQUIRED_TYPES.includes(data.highSchoolType) &&
-      !data.highSchoolName
-    ) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        path: ["highSchoolName"],
-        message: "High School Name is required.",
-      });
+    // Equivalence Certificate: skip all bac-specific requirements.
+    if (data.baccalaureateMajor !== EQUIVALENCE_BAC_MAJOR) {
+      const requiredBacFields: [keyof typeof data, string][] = [
+        ["baccalaureateSeries", "Baccalaureate Register Number is required."],
+        ["baccalaureateYear", "Baccalaureate Year is required."],
+        ["baccalaureateAverage", "Baccalaureate Average is required."],
+        ["mathematicsMark", "Mathematics Mark is required."],
+        ["physicsMark", "Physics Mark is required."],
+        ["highSchoolType", "High School Type is required."],
+      ];
+      for (const [field, message] of requiredBacFields) {
+        if (!data[field]) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: [field],
+            message,
+          });
+        }
+      }
+
+      if (
+        HIGH_SCHOOL_NAME_REQUIRED_TYPES.includes(data.highSchoolType ?? "") &&
+        !data.highSchoolName
+      ) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["highSchoolName"],
+          message: "High School Name is required.",
+        });
+      }
     }
   });
 
-// Slim academic step (master): only current university info, all optional.
+// Slim academic step (master): license info + current university info.
 export const MasAcademicInfoSchema = z.object({
+  licenseUniversity: z.string().min(2, "License University is required."),
+  licenseYear: z.string().min(1, "License Year is required."),
+  licenseMajor: z.string().min(1, "License Major is required."),
   currentUniversity: z.string().optional(),
   currentUniversityYear: z.string().optional(),
   currentUniversityMajor: z.string().optional(),
@@ -234,7 +275,7 @@ export const LicParentsInfoSchema = z.object({
   fatherPhoneNumber: z
     .string()
     .min(10, "Father's Phone Number is required.")
-    .regex(/^(\+213|0)(5|6|7)[0-9]{8}$/, "Enter a valid phone number"),
+    .regex(/^\+?[0-9\s\-()]{7,20}$/, "Enter a valid phone number"),
   fatherEmail: z.literal("").or(
     z
       .string()
@@ -249,6 +290,7 @@ export const LicParentsInfoSchema = z.object({
   motherOccupation: z.string().optional(),
   guardianFullName: z.string().min(1, "Guardian's Full Name is required."),
   guardianRelationship: z.string().min(1, "Relationship is required."),
+  guardianAddress: z.string().min(1, "Guardian's Address is required."),
   guardianEmail: z
     .string()
     .email("Invalid email address.")
@@ -259,7 +301,7 @@ export const LicParentsInfoSchema = z.object({
   guardianPhoneNumber: z
     .string()
     .min(10, "Guardian's Phone Number is required.")
-    .regex(/^(\+213|0)(5|6|7)[0-9]{8}$/, "Enter a valid phone number"),
+    .regex(/^\+?[0-9\s\-()]{7,20}$/, "Enter a valid phone number"),
 });
 
 // Slim parents step (master): guardian only.
@@ -284,7 +326,7 @@ export const NewLicenseSchema = PersonalInfoSchema.and(LicAcademicInfoSchema)
 
 export const NewMasterSchema = PersonalInfoSchema.and(MasAcademicInfoSchema)
   .and(NewMasMajorSchema)
-  .and(MasParentsInfoSchema);
+  .and(LicParentsInfoSchema);
 
 export const ReLicenseSchema = PersonalInfoSchema.and(ReLicMajorSchema);
 
@@ -313,6 +355,7 @@ const personalFields = [
   "phoneNumber1",
   "phoneNumber2",
   "medicalCondition",
+  "medicalConditionOther",
 ];
 
 const licAcademicFields = [
@@ -327,6 +370,9 @@ const licAcademicFields = [
 ];
 
 const masAcademicFields = [
+  "licenseUniversity",
+  "licenseYear",
+  "licenseMajor",
   "currentUniversity",
   "currentUniversityYear",
   "currentUniversityMajor",
@@ -343,6 +389,7 @@ const licParentsFields = [
   "motherLastName",
   "guardianFullName",
   "guardianRelationship",
+  "guardianAddress",
   "guardianEmail",
   "guardianPhoneNumber",
 ];
@@ -368,7 +415,7 @@ export const fieldsByStep: Record<string, string[][]> = {
     personalFields,
     masAcademicFields,
     masMajorFields,
-    masParentsFields,
+    licParentsFields,
     [], // review
   ],
   reLicense: [personalFields, licMajorFields, []],

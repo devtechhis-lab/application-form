@@ -27,10 +27,10 @@ function RankPanel({ ranked }: { ranked: any[] }) {
           </span>
           <div className="min-w-0 flex-1">
             <div className="truncate text-[13px] font-semibold text-slate-800">
-              {m.name}
+              {m?.name ? m.name : "Unknown Major"}
             </div>
             <div className="text-[11px] text-slate-500">
-              {RANK_LABELS[i]} · {m.language} · {m.firstInstallment} first
+              {/* {RANK_LABELS[i]} · {m.language} · {m.firstInstallment} first */}
             </div>
           </div>
         </div>

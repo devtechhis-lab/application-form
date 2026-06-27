@@ -1,6 +1,8 @@
 // Fill the Parents Information section: father, mother, and guardian details.
 export const fillParentsInfo = (data, { drawInField }) => {
   const {
+    type,
+    degree,
     fatherFirstName,
     fatherOccupation,
     fatherPhoneNumber,
@@ -12,6 +14,7 @@ export const fillParentsInfo = (data, { drawInField }) => {
     guardianRelationship,
     guardianEmail,
     guardianPhoneNumber,
+    guardianAddress,
   } = data;
 
   drawInField("fatherName", fatherFirstName);
@@ -24,4 +27,5 @@ export const fillParentsInfo = (data, { drawInField }) => {
   drawInField("guardianPhone", guardianPhoneNumber);
   drawInField("guardianEmail", guardianEmail);
   drawInField("guardianRelationship", guardianRelationship);
+  drawInField("guardianAddress", guardianAddress);
 };

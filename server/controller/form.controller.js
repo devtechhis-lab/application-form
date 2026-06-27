@@ -1,8 +1,8 @@
 import { sheets } from "../index.js";
-import { schemaForVariant } from "../validation/schemas.js";
 import addresses from "../data/addresses.json" with { type: "json" };
 import { externMajors } from "../data/data.js";
 import { generateLicensePdf } from "../services/pdf/licensePdf.js";
+import { uploadForm } from "../utils/uploadForm.js";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -28,20 +28,15 @@ const formatDate = (value) => {
 };
 
 export const newRegistration = async (req, res) => {
-  // Pick the validation schema based on the registration variant.
-  const schema = schemaForVariant(req.body?.type, req.body?.degree);
-  if (!schema) {
+  const validTypes = ["newRegistration", "reRegistration"];
+  const validDegrees = ["license", "master"];
+  if (
+    !validTypes.includes(req.body?.type) ||
+    !validDegrees.includes(req.body?.degree)
+  ) {
     return res.status(400).json({
       success: false,
       error: "Unknown registration type or degree.",
-    });
-  }
-
-  const parsed = schema.safeParse(req.body);
-  if (!parsed.success) {
-    return res.status(400).json({
-      success: false,
-      errors: parsed.error.flatten().fieldErrors,
     });
   }
 
@@ -71,6 +66,7 @@ export const newRegistration = async (req, res) => {
     phoneNumber1,
     phoneNumber2,
     medicalCondition,
+    medicalConditionOther,
 
     // Academic Background
     baccalaureateSeries,
@@ -84,6 +80,9 @@ export const newRegistration = async (req, res) => {
     currentUniversity,
     currentUniversityYear,
     currentUniversityMajor,
+    licenseMajor,
+    licenseUniversity,
+    licenseYear,
 
     // Parents Information
     fatherFirstName,
@@ -102,15 +101,15 @@ export const newRegistration = async (req, res) => {
     // Choosing Majors
     majors,
     language,
-  } = parsed.data;
+  } = req.body;
 
-  console.log(dateOfBirth);
+  let pdfUrl;
 
   try {
     if (type === "newRegistration" && degree === "license") {
-      // await generateLicensePdf(parsed.data);
-
-      // throw new Error("PDF generation is not yet implemented in the backend.");
+      const pdfBytes = await generateLicensePdf(req.body);
+      const fileBaseName = `${type}-${degree}-${lastNameLatin}-${firstNameLatin}`;
+      pdfUrl = await uploadForm(pdfBytes, fileBaseName);
 
       await sheets.spreadsheets.values.append({
         spreadsheetId: process.env.SHEET_ID,
@@ -138,7 +137,7 @@ export const newRegistration = async (req, res) => {
                   " - " +
                   addresses[birthWillaya - 1].nameFr
                 : "",
-              birthCommune,
+              birthCountry === "Algeria - الجزائر" ? birthCommune : "",
               birthAddress,
               addresses[residenceWillaya - 1].nameAr +
                 " " +
@@ -150,7 +149,9 @@ export const newRegistration = async (req, res) => {
               email,
               phoneNumber1,
               phoneNumber2,
-              medicalCondition,
+              medicalCondition === "Other - أخر"
+                ? medicalConditionOther
+                : medicalCondition,
               baccalaureateSeries,
               baccalaureateYear,
               baccalaureateMajor,
@@ -159,6 +160,9 @@ export const newRegistration = async (req, res) => {
               physicsMark,
               highSchoolName,
               highSchoolType,
+              null,
+              null,
+              null,
               currentUniversity,
               currentUniversityYear,
               currentUniversityMajor,
@@ -173,19 +177,20 @@ export const newRegistration = async (req, res) => {
               guardianRelationship,
               guardianPhoneNumber,
               guardianEmail,
-              null,
+              guardianAddress,
               majorName(majors[0]),
               majorName(majors[1]),
               language,
+              pdfUrl,
             ],
           ],
         },
       });
     }
     if (type === "reRegistration" && degree === "license") {
-      // await generateLicensePdf(parsed.data);
-
-      // throw new Error("PDF generation is not yet implemented in the backend.");
+      await generateLicensePdf(req.body);
+      const fileBaseName = `${type}-${degree}-${lastNameLatin}-${firstNameLatin}`;
+      pdfUrl = await uploadForm(pdfBytes, fileBaseName);
 
       await sheets.spreadsheets.values.append({
         spreadsheetId: process.env.SHEET_ID,
@@ -250,6 +255,9 @@ export const newRegistration = async (req, res) => {
               null,
               null,
               null,
+              null,
+              null,
+              null,
               majorName(majors[0]),
               null,
               language,
@@ -259,6 +267,10 @@ export const newRegistration = async (req, res) => {
       });
     }
     if (type === "newRegistration" && degree === "master") {
+      await generateLicensePdf(req.body);
+      const fileBaseName = `${type}-${degree}-${lastNameLatin}-${firstNameLatin}`;
+      pdfUrl = await uploadForm(pdfBytes, fileBaseName);
+
       await sheets.spreadsheets.values.append({
         spreadsheetId: process.env.SHEET_ID,
         range: "Sheet6!A:D",
@@ -306,16 +318,19 @@ export const newRegistration = async (req, res) => {
               null,
               null,
               null,
+              licenseMajor,
+              licenseUniversity,
+              licenseYear,
               currentUniversity,
               currentUniversityYear,
               currentUniversityMajor,
-              null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              null,
+              fatherFirstName,
+              fatherOccupation,
+              fatherEmail,
+              fatherPhoneNumber,
+              motherFirstName,
+              motherLastName,
+              motherOccupation,
               guardianFullName,
               guardianRelationship,
               guardianEmail,
@@ -330,6 +345,10 @@ export const newRegistration = async (req, res) => {
       });
     }
     if (type === "reRegistration" && degree === "master") {
+      await generateLicensePdf(req.body);
+      const fileBaseName = `${type}-${degree}-${lastNameLatin}-${firstNameLatin}`;
+      pdfUrl = await uploadForm(pdfBytes, fileBaseName);
+
       await sheets.spreadsheets.values.append({
         spreadsheetId: process.env.SHEET_ID,
         range: "Sheet6!A:D",
@@ -392,6 +411,9 @@ export const newRegistration = async (req, res) => {
               null,
               null,
               null,
+              null,
+              null,
+              null,
               majorName(majors[0]),
               null,
               language,
@@ -403,7 +425,8 @@ export const newRegistration = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: "Data added to Google Sheet",
+      message: "Form submitted successfully.",
+      formUrl: pdfUrl,
     });
   } catch (error) {
     console.log(error);

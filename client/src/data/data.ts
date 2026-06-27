@@ -20,7 +20,7 @@ export const familyStatus = [
   {
     id: "2",
     label: "Married",
-    value: "Married - متزوج",
+    value: "married - متزوج",
   },
 ];
 
@@ -225,6 +225,45 @@ export const externMajors = [
     language: "Arabic",
     total: "500 000 DA",
     firstInstallment: "250 000 DA",
+  },
+];
+
+export const masterMajors = [
+  {
+    id: "csd",
+    name: "Computer Science - Data Engineering and Web Technology",
+    language: "French",
+    total: "525 000 DA",
+    firstInstallment: "265 000 DA",
+  },
+  {
+    id: "csc",
+    name: "Computer Science - CyberSecurity",
+    language: "French",
+    total: "520 000 DA",
+    firstInstallment: "265 000 DA",
+  },
+
+  {
+    id: "mba",
+    name: "Economic Science - Business Administration",
+    language: "French/Arabic",
+    total: "445 000 DA",
+    firstInstallment: "225 500 DA",
+  },
+  {
+    id: "esg",
+    name: "Education Science - Guidance and Orientation",
+    language: "Arabic",
+    total: "385 000 DA",
+    firstInstallment: "192 000 DA",
+  },
+  {
+    id: "lbl",
+    name: "Law - Business Law",
+    language: "Arabic",
+    total: "385 000 DA",
+    firstInstallment: "192 000 DA",
   },
 ];
 

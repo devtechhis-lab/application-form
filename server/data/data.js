@@ -42,7 +42,7 @@ export const externMajors = [
     firstInstallment: "205 000 DA",
   },
   {
-    id: "pl",
+    id: "lpl",
     name: "Law - Public Law",
     language: "Arabic",
     total: "400 000 DA",

@@ -1,3 +1,4 @@
+import { masterMajors } from "./data";
 // Single source of truth for the selectable majors. Note that the same major
 // `id` maps to a different `name` for license vs master, so callers must use
 // the list that matches their path (use `majorsFor(path)`).
@@ -54,7 +55,7 @@ export const licenseMajors: Major[] = [
     firstInstallment: "205 000 DA",
   },
   {
-    id: "pl",
+    id: "lpl",
     name: "Law - Public Law",
     language: "Arabic",
     total: "400 000 DA",
@@ -62,43 +63,43 @@ export const licenseMajors: Major[] = [
   },
 ];
 
-export const masterMajors: Major[] = [
-  {
-    id: "cs",
-    name: "Computer Science - Data Engineering and Web Technology",
-    language: "French",
-    total: "550 000 DA",
-    firstInstallment: "275 000 DA",
-  },
-  {
-    id: "scs",
-    name: "Computer Science - CyberSecurity",
-    language: "French",
-    total: "550 000 DA",
-    firstInstallment: "275 000 DA",
-  },
-  {
-    id: "ebm",
-    name: "Economic Science - Business Administration",
-    language: "French/Arabic",
-    total: "485 000 DA",
-    firstInstallment: "242 500 DA",
-  },
-  {
-    id: "cp",
-    name: "Education Science - Guidance and Orientation",
-    language: "Arabic",
-    total: "410 000 DA",
-    firstInstallment: "205 000 DA",
-  },
-  {
-    id: "pl",
-    name: "Law - Business Law",
-    language: "Arabic",
-    total: "400 000 DA",
-    firstInstallment: "200 000 DA",
-  },
-];
+// export const masterMajors: Major[] = [
+//   {
+//     id: "cs",
+//     name: "Computer Science - Data Engineering and Web Technology",
+//     language: "French",
+//     total: "550 000 DA",
+//     firstInstallment: "275 000 DA",
+//   },
+//   {
+//     id: "scs",
+//     name: "Computer Science - CyberSecurity",
+//     language: "French",
+//     total: "550 000 DA",
+//     firstInstallment: "275 000 DA",
+//   },
+//   {
+//     id: "ebm",
+//     name: "Economic Science - Business Administration",
+//     language: "French/Arabic",
+//     total: "485 000 DA",
+//     firstInstallment: "242 500 DA",
+//   },
+//   {
+//     id: "cp",
+//     name: "Education Science - Guidance and Orientation",
+//     language: "Arabic",
+//     total: "410 000 DA",
+//     firstInstallment: "205 000 DA",
+//   },
+//   {
+//     id: "pl",
+//     name: "Law - Business Law",
+//     language: "Arabic",
+//     total: "400 000 DA",
+//     firstInstallment: "200 000 DA",
+//   },
+// ];
 
 // Majors whose selection requires the applicant to pick a language of study.
 export const LANGUAGE_REQUIRED_MAJORS = ["cs", "scs", "ste"];

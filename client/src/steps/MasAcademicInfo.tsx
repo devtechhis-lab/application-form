@@ -23,6 +23,106 @@ const AcademicInfo = ({ form }: { form: any }) => {
         </p>
       </div>
       <div className="flex flex-col gap-4">
+        {/* University Information */}
+        <div className="flex flex-col gap-5">
+          <h3 className="text-sm font-medium text-primary-500">
+            License Information
+          </h3>
+          <div className="flex flex-col gap-4">
+            {/* license University */}
+            <Controller
+              name="licenseUniversity"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field
+                  className=" flex flex-col gap-1.5"
+                  data-invalid={fieldState.invalid}
+                >
+                  <FieldLabel className="text-xs font-medium text-slate-500 gap-0">
+                    License University
+                    <span className="text-red-500 ml-0.5">*</span>
+                  </FieldLabel>
+
+                  <Input
+                    type="text"
+                    className="input"
+                    {...field}
+                    aria-invalid={fieldState.invalid}
+                    placeholder="Enter your license university name"
+                  />
+
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+
+            {/* license major and year */}
+            <div className=" flex flex-col sm:flex-row gap-4">
+              {/* License Year */}
+              <Controller
+                name="licenseYear"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field
+                    className=" flex flex-col gap-1.5"
+                    data-invalid={fieldState.invalid}
+                  >
+                    <FieldLabel className="text-xs font-medium text-slate-500 gap-0">
+                      License Year
+                      <span className="text-red-500 ml-0.5">*</span>
+                    </FieldLabel>
+
+                    <Input
+                      type="text"
+                      className="input"
+                      {...field}
+                      aria-invalid={fieldState.invalid}
+                      placeholder="Enter your license year"
+                    />
+
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
+                  </Field>
+                )}
+              />
+
+              {/* License Major */}
+              <Controller
+                name="licenseMajor"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field
+                    className="flex flex-col gap-1.5"
+                    data-invalid={fieldState.invalid}
+                  >
+                    <FieldLabel className="text-xs font-medium text-slate-500 gap-0">
+                      License Major
+                      <span className="text-red-500 ml-0.5">*</span>
+                    </FieldLabel>
+
+                    <Input
+                      type="text"
+                      className="input"
+                      {...field}
+                      aria-invalid={fieldState.invalid}
+                      placeholder="Enter your license major"
+                    />
+
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
+                  </Field>
+                )}
+              />
+            </div>
+          </div>
+        </div>
+
+        <span className="w-full h-0.5 bg-secondary rounded-full"></span>
+
         {/* Current University */}
         <Controller
           name="currentUniversity"

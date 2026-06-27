@@ -29,6 +29,8 @@ const PersonalInfo = ({ form }: { form: any }) => {
   // Conditional UI is derived from form state so it survives step navigation.
   const isAlgerian = form.watch("nationality") === "Algerian - جزائري";
   const isBirthInAlgeria = form.watch("birthCountry") === "Algeria - الجزائر";
+  const isOtherMedicalCondition =
+    form.watch("medicalCondition") === "Other - أخر";
   const birthWillay = parseInt(form.watch("birthWillaya")) || 0;
   const ResidenceWillay = parseInt(form.watch("residenceWillaya")) || 0;
 
@@ -853,6 +855,37 @@ const PersonalInfo = ({ form }: { form: any }) => {
             </Field>
           )}
         />
+
+        {/* Other Medical Condition (free text) */}
+        {isOtherMedicalCondition && (
+          <Controller
+            name="medicalConditionOther"
+            control={form.control}
+            render={({ field, fieldState }) => (
+              <Field
+                className=" flex flex-col gap-1.5"
+                data-invalid={fieldState.invalid}
+              >
+                <FieldLabel className="text-xs font-medium text-slate-500 gap-0">
+                  Please specify your medical condition
+                  <span className="text-red-500 ml-0.5">*</span>
+                </FieldLabel>
+
+                <Input
+                  type="text"
+                  className="input"
+                  {...field}
+                  aria-invalid={fieldState.invalid}
+                  placeholder="Describe your medical condition"
+                />
+
+                {fieldState.invalid && (
+                  <FieldError errors={[fieldState.error]} />
+                )}
+              </Field>
+            )}
+          />
+        )}
       </div>
     </div>
   );

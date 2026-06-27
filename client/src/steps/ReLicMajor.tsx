@@ -55,7 +55,7 @@ const MAJORS = [
     firstInstallment: "205 000 DA",
   },
   {
-    id: "pl",
+    id: "lpl",
     name: "Law - Public Law",
     language: "Arabic",
     total: "400 000 DA",
@@ -63,9 +63,17 @@ const MAJORS = [
   },
 ];
 const MAX_CHOICES = 1;
-const LANGUAGE_MAJORS = ["cs", "scs", "ste"];
+const LANGUAGE_MAJORS = ["cs", "scs", "ste", "ebm", "cse"];
 
-const ChooseMajor = ({ form }: { form: any }) => {
+interface Major {
+  id: string;
+  name: string;
+  language: string;
+  total: string;
+  firstInstallment: string;
+}
+
+const ChooseMajor = ({ form, majors }: { form: any; majors: Major[] }) => {
   const selectedIds: string[] = form.watch("majors") ?? [];
   const atLimit = selectedIds.length >= MAX_CHOICES;
   const rankOf = (id: string) => selectedIds.indexOf(id) + 1;
@@ -95,7 +103,7 @@ const ChooseMajor = ({ form }: { form: any }) => {
       </div>
       <div className="flex flex-col gap-4">
         <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-          {MAJORS.map((m) => (
+          {majors.map((m) => (
             <MajorCard
               key={m.id}
               major={m}
@@ -135,11 +143,14 @@ const ChooseMajor = ({ form }: { form: any }) => {
                     />
                   </SelectTrigger>
                   <SelectContent className="p-3" position="item-aligned">
-                    <SelectItem key="1" value="english">
+                    <SelectItem key="1" value="english - إنجليزية">
                       English
                     </SelectItem>
-                    <SelectItem key="2" value="french">
+                    <SelectItem key="2" value="french - فرنسية">
                       French
+                    </SelectItem>
+                    <SelectItem key="3" value="arabic - العربية">
+                      Arabic
                     </SelectItem>
                   </SelectContent>
                 </Select>

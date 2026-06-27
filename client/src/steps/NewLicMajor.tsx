@@ -164,7 +164,7 @@ const ChooseMajor = ({ form, Majors }: { form: any; Majors: Major[] }) => {
       </div>
 
       {/* ranking rail */}
-      <div className="lg:sticky lg:top-4 lg:self-start">
+      <div className="w-full lg:sticky lg:top-4 lg:self-start">
         <div className="mb-2 flex items-center gap-1.5 text-xs font-medium uppercase tracking-wide text-slate-500">
           <Trophy size={13} className="text-[#1e3c73]" />
           Your ranking

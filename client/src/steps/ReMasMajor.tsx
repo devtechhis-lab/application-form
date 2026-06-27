@@ -10,53 +10,16 @@ import {
 } from "@/components/ui/select";
 import { Trophy } from "lucide-react";
 import RankPanel from "@/components/RankPanel";
+import { masterMajors } from "@/data/data";
 
-const MAJORS = [
-  {
-    id: "cs",
-    name: "Computer Science - Data Engineering and Web Technology",
-    language: "French",
-    total: "550 000 DA",
-    firstInstallment: "275 000 DA",
-  },
-  {
-    id: "scs",
-    name: "Computer Science - CyberSecurity",
-    language: "French",
-    total: "550 000 DA",
-    firstInstallment: "275 000 DA",
-  },
-
-  {
-    id: "ebm",
-    name: "Economic Science - Business Administration",
-    language: "French/Arabic",
-    total: "485 000 DA",
-    firstInstallment: "242 500 DA",
-  },
-  {
-    id: "cp",
-    name: "Education Science - Guidance and Orientation",
-    language: "Arabic",
-    total: "410 000 DA",
-    firstInstallment: "205 000 DA",
-  },
-  {
-    id: "pl",
-    name: "Law - Business Law",
-    language: "Arabic",
-    total: "400 000 DA",
-    firstInstallment: "200 000 DA",
-  },
-];
 const MAX_CHOICES = 1;
-const LANGUAGE_MAJORS = ["cs", "scs", "ebm"];
+const LANGUAGE_MAJORS = ["csd", "csc", "mba"];
 
 const ReMasMajor = ({ form }: { form: any }) => {
   const selectedIds: string[] = form.watch("majors") ?? [];
   const atLimit = selectedIds.length >= MAX_CHOICES;
   const rankOf = (id: string) => selectedIds.indexOf(id) + 1;
-  const ranked = selectedIds.map((id) => MAJORS.find((m) => m.id === id));
+  const ranked = selectedIds.map((id) => masterMajors.find((m) => m.id === id));
   const toggleMajor = (id: string) => {
     const prev: string[] = form.getValues("majors") ?? [];
     let next: string[];
@@ -82,7 +45,7 @@ const ReMasMajor = ({ form }: { form: any }) => {
       </div>
       <div className="flex flex-col gap-4">
         <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-          {MAJORS.map((m) => (
+          {masterMajors.map((m) => (
             <MajorCard
               key={m.id}
               major={m}

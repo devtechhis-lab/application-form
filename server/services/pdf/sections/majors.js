@@ -1,5 +1,13 @@
 // A couple of major ids differ from their PDF field name; remap those.
-const majorFieldName = { cp: "scp", pl: "lpl" };
+const majorFieldName = {
+  cp: "cp",
+  lpl: "lpl",
+  cs: "cs",
+  cse: "cse",
+  scs: "scs",
+  ste: "ste",
+  ebm: "ebm",
+};
 
 // Fill the Choosing Majors section: the study language checkbox and the
 // ranked list of major preferences.

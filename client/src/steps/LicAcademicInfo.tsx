@@ -13,10 +13,16 @@ import { bacMajor, hsType, universityYear } from "@/data/data";
 // High school name is only required for public/private schools.
 const HIGH_SCHOOL_NAME_REQUIRED_TYPES = ["public - حكومية", "private - خاصة"];
 
+// Equivalence Certificate holders did not sit the Algerian baccalaureate, so
+// the bac-specific fields are optional for them.
+const EQUIVALENCE_BAC_MAJOR = "EQUIVALENCE - شهادة معادلة";
+
 const AcademicInfo = ({ form }: { form: any }) => {
-  const highSchoolNameRequired = HIGH_SCHOOL_NAME_REQUIRED_TYPES.includes(
-    form.watch("highSchoolType"),
-  );
+  const isEquivalence =
+    form.watch("baccalaureateMajor") === EQUIVALENCE_BAC_MAJOR;
+  const highSchoolNameRequired =
+    !isEquivalence &&
+    HIGH_SCHOOL_NAME_REQUIRED_TYPES.includes(form.watch("highSchoolType"));
   return (
     <div className="w-full flex flex-col gap-4">
       <div className="flex flex-col">
@@ -48,7 +54,9 @@ const AcademicInfo = ({ form }: { form: any }) => {
                   >
                     <FieldLabel className="text-xs font-medium text-slate-500 gap-0">
                       Baccalaureate Register Number
-                      <span className="text-red-500 ml-0.5">*</span>
+                      {!isEquivalence && (
+                        <span className="text-red-500 ml-0.5">*</span>
+                      )}
                     </FieldLabel>
 
                     <Input
@@ -77,7 +85,9 @@ const AcademicInfo = ({ form }: { form: any }) => {
                   >
                     <FieldLabel className="text-xs font-medium text-slate-500 gap-0">
                       Baccalaureate Year
-                      <span className="text-red-500 ml-0.5">*</span>
+                      {!isEquivalence && (
+                        <span className="text-red-500 ml-0.5">*</span>
+                      )}
                     </FieldLabel>
                     <Select
                       name={field.name}
@@ -177,7 +187,9 @@ const AcademicInfo = ({ form }: { form: any }) => {
                   >
                     <FieldLabel className="text-xs font-medium text-slate-500 gap-0">
                       Baccalaureate Average
-                      <span className="text-red-500 ml-0.5">*</span>
+                      {!isEquivalence && (
+                        <span className="text-red-500 ml-0.5">*</span>
+                      )}
                     </FieldLabel>
 
                     <Input
@@ -253,7 +265,9 @@ const AcademicInfo = ({ form }: { form: any }) => {
                   >
                     <FieldLabel className="text-xs font-medium text-slate-500 gap-0">
                       Mathematics Mark
-                      <span className="text-red-500 ml-0.5">*</span>
+                      {!isEquivalence && (
+                        <span className="text-red-500 ml-0.5">*</span>
+                      )}
                     </FieldLabel>
 
                     <Input
@@ -285,7 +299,9 @@ const AcademicInfo = ({ form }: { form: any }) => {
                   >
                     <FieldLabel className="text-xs font-medium text-slate-500 gap-0">
                       Physics Mark
-                      <span className="text-red-500 ml-0.5">*</span>
+                      {!isEquivalence && (
+                        <span className="text-red-500 ml-0.5">*</span>
+                      )}
                     </FieldLabel>
 
                     <Input
@@ -351,7 +367,9 @@ const AcademicInfo = ({ form }: { form: any }) => {
                   >
                     <FieldLabel className="text-xs font-medium text-slate-500 gap-0">
                       High School Type
-                      <span className="text-red-500 ml-0.5">*</span>
+                      {!isEquivalence && (
+                        <span className="text-red-500 ml-0.5">*</span>
+                      )}
                     </FieldLabel>
                     <Select
                       name={field.name}

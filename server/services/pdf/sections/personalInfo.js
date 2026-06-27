@@ -51,6 +51,7 @@ export const fillPersonalInfo = (data, { drawInField, checkBox }) => {
     phoneNumber1,
     phoneNumber2,
     medicalCondition,
+    medicalConditionOther,
   } = data;
 
   drawInField("firstName", firstName);
@@ -58,8 +59,10 @@ export const fillPersonalInfo = (data, { drawInField, checkBox }) => {
   drawInField("firstNameLatin", firstNameLatin);
   drawInField("lastNameLatin", lastNameLatin);
   drawInField("nationality", nationality);
-  drawInField("NIN", NIN);
-  drawInField("dateOfExpiration", formatDate(dateOfExpiration));
+  if (nationality === "Algerian - جزائري") {
+    drawInField("NIN", NIN);
+    drawInField("dateOfExpiration", formatDate(dateOfExpiration));
+  }
 
   if (birthCountry === "Algeria - الجزائر") {
     drawInField("placeOfBirth", formatPlace(birthWillaya, birthCommune));
@@ -107,6 +110,9 @@ export const fillPersonalInfo = (data, { drawInField, checkBox }) => {
 
   if (medicalCondition === "Good Health - صحة جيدة") {
     checkBox("isGoodHealth");
+  } else if (medicalCondition === "Other - أخر") {
+    checkBox("isNotGoodHealth");
+    drawInField("medicalCondition", medicalConditionOther);
   } else {
     checkBox("isNotGoodHealth");
     drawInField("medicalCondition", medicalCondition);

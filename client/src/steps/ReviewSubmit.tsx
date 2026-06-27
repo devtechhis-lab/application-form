@@ -76,8 +76,12 @@ function ReviewSubmit({ form, path }: { form: any; path: FormPath }) {
         <ReviewItem k="Gender" v={v.gender} />
         <ReviewItem k="Family status" v={v.familyStatus} />
         <ReviewItem k="Nationality" v={v.nationality} />
-        <ReviewItem k="NIN" v={v.NIN} />
-        <ReviewItem k="Date of expiration" v={v.dateOfExpiration} />
+        {v.nationality === "Algerian - جزائري" && (
+          <>
+            <ReviewItem k="NIN" v={v.NIN} />
+            <ReviewItem k="Date of expiration" v={v.dateOfExpiration} />
+          </>
+        )}
         <ReviewItem k="Date of Birth" v={v.dateOfBirth} />
         <Divider />
         <h3 className="col-span-1 sm:col-span-2 text-sm font-medium text-primary-500">
@@ -117,7 +121,15 @@ function ReviewSubmit({ form, path }: { form: any; path: FormPath }) {
         <ReviewItem k="Email" v={v.email} />
         <ReviewItem k="Phone Number 1" v={v.phoneNumber1} />
         <ReviewItem k="Phone Number 2" v={v.phoneNumber2} />
-        <ReviewItem k="Medical Condition" v={v.medicalCondition} />
+        {v.medicalCondition !== "Other - أخر" && (
+          <ReviewItem k="Medical Condition" v={v.medicalCondition} />
+        )}
+        {v.medicalCondition === "Other - أخر" && (
+          <ReviewItem
+            k="Medical Condition (Other)"
+            v={v.medicalConditionOther}
+          />
+        )}
       </SectionCard>
 
       {/* Academic info — only the "new" paths collect it. License gathers full
@@ -140,8 +152,19 @@ function ReviewSubmit({ form, path }: { form: any; path: FormPath }) {
               <Divider />
             </>
           )}
+          {!isLicense && (
+            <>
+              <h3 className="col-span-1 sm:col-span-2 text-sm font-medium text-primary-500">
+                License Information
+              </h3>
+              <ReviewItem k="University" v={v.licenseUniversity} />
+              <ReviewItem k="Year" v={v.licenseYear} />
+              <ReviewItem k="Major" v={v.licenseMajor} />
+              <Divider />
+            </>
+          )}
           <h3 className="col-span-1 sm:col-span-2 text-sm font-medium text-primary-500">
-            University Information
+            Current University Information
           </h3>
           <ReviewItem k="Current University" v={v.currentUniversity} />
           <ReviewItem k="University Year" v={v.currentUniversityYear} />
@@ -153,25 +176,21 @@ function ReviewSubmit({ form, path }: { form: any; path: FormPath }) {
           father + mother + guardian; master only the guardian (with address). */}
       {isNew && (
         <SectionCard icon={<Users size={15} />} title="Parental Information">
-          {isLicense && (
-            <>
-              <h3 className="col-span-1 sm:col-span-2 text-sm font-medium text-primary-500">
-                Father's Information
-              </h3>
-              <ReviewItem k="First Name" v={v.fatherFirstName} />
-              <ReviewItem k="Occupation" v={v.fatherOccupation} />
-              <ReviewItem k="Email" v={v.fatherEmail} />
-              <ReviewItem k="Phone Number" v={v.fatherPhoneNumber} />
-              <Divider />
-              <h3 className="col-span-1 sm:col-span-2 text-sm font-medium text-primary-500">
-                Mother's Information
-              </h3>
-              <ReviewItem k="First Name" v={v.motherFirstName} />
-              <ReviewItem k="Last Name" v={v.motherLastName} />
-              <ReviewItem k="Occupation" v={v.motherOccupation} />
-              <Divider />
-            </>
-          )}
+          <h3 className="col-span-1 sm:col-span-2 text-sm font-medium text-primary-500">
+            Father's Information
+          </h3>
+          <ReviewItem k="First Name" v={v.fatherFirstName} />
+          <ReviewItem k="Occupation" v={v.fatherOccupation} />
+          <ReviewItem k="Email" v={v.fatherEmail} />
+          <ReviewItem k="Phone Number" v={v.fatherPhoneNumber} />
+          <Divider />
+          <h3 className="col-span-1 sm:col-span-2 text-sm font-medium text-primary-500">
+            Mother's Information
+          </h3>
+          <ReviewItem k="First Name" v={v.motherFirstName} />
+          <ReviewItem k="Last Name" v={v.motherLastName} />
+          <ReviewItem k="Occupation" v={v.motherOccupation} />
+          <Divider />
           <h3 className="col-span-1 sm:col-span-2 text-sm font-medium text-primary-500">
             Guardian's Information
           </h3>
@@ -181,7 +200,7 @@ function ReviewSubmit({ form, path }: { form: any; path: FormPath }) {
           />
           <ReviewItem k="Relationship to Student" v={v.guardianRelationship} />
           {/* Guardian address is only collected on the master path. */}
-          {!isLicense && <ReviewItem k="Address" v={v.guardianAddress} />}
+          <ReviewItem k="Address" v={v.guardianAddress} />
           <ReviewItem k="Email" v={v.guardianEmail} />
           <ReviewItem k="Phone Number" v={v.guardianPhoneNumber} />
         </SectionCard>

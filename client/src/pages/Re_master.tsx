@@ -33,6 +33,7 @@ const baseDefaultValues = {
   phoneNumber1: "",
   phoneNumber2: "",
   medicalCondition: "",
+  medicalConditionOther: "",
   majors: [],
   language: "",
 };
@@ -46,8 +47,10 @@ const ReMaster = ({
   degree: string;
   type: string;
 }) => {
+  const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [current, setCurrent] = useState(0);
+  const [formUrl, setFormUrl] = useState("");
   const defaultValues = { degree, type, ...baseDefaultValues };
   const STEPS = [
     { key: "personal", label: "Personal info", Icon: User },
@@ -67,40 +70,30 @@ const ReMaster = ({
   };
 
   const onSubmit = async (data: any) => {
-    // The whole flow is one <form>, so pressing Enter in any input fires this
-    // handler from earlier steps too. Only finalize from the review step;
-    // otherwise treat it like Continue so we never skip review.
-    // if (current < 2) {
-    //   goNext();
-    //   return;
-    // }
     setLoading(true);
     try {
-      const res = await fetch(
-        "https://application-form-vdtx.onrender.com/api/v1",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(normalizeFormDates(data)),
-        },
-      );
+      const res = await fetch("http://localhost:5000/api/v1", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(normalizeFormDates(data)),
+      });
 
       if (res.ok) {
         const data = await res.json();
-        console.log(data);
         setCurrent((c) => c + 1);
+        setFormUrl(data.formUrl);
       } else {
-        console.log(await res.json());
+        setErrorMessage("Failed to submit the form. Please try again.");
       }
     } catch (error) {
-      console.error(error);
+      setErrorMessage("Failed to submit the form. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
   if (current > 2) {
-    return <SubmitSuccess />;
+    return <SubmitSuccess formUrl={formUrl} />;
   }
   return (
     <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -110,7 +103,11 @@ const ReMaster = ({
         {current === 1 && <ChooseMajor form={form} />}
         {current === 2 && <ReviewSubmit form={form} path="reMaster" />}
       </div>
-
+      {errorMessage && (
+        <div className="mx-7 my-5 px-5 py-2 rounded-sm bg-red-100 flex items-center justify-between">
+          <p className="text-red-500">{errorMessage}</p>
+        </div>
+      )}
       <div className="px-7 pt-5 pb-6 border-t border-secondary flex items-center justify-between">
         {current === 0 ? (
           <button

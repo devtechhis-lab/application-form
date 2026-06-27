@@ -17,13 +17,34 @@ const OUTPUT_PATH = path.join(SERVER_ROOT, "filled.pdf");
 // interactive fields, writes the result to server/filled.pdf, and returns the
 // saved bytes.
 export const generateLicensePdf = async (data) => {
-  const context = await loadFormDocument(data.nationality);
+  const context = await loadFormDocument(
+    data.nationality,
+    data.degree,
+    data.type,
+  );
   const drawers = createDrawers(context);
 
-  fillPersonalInfo(data, drawers);
-  // fillParentsInfo(data, drawers);
-  // fillAcademicInfo(data, drawers);
-  fillMajors(data, drawers);
+  if (data.degree === "license") {
+    if (data.type === "newRegistration") {
+      fillPersonalInfo(data, drawers);
+      fillParentsInfo(data, drawers);
+      fillAcademicInfo(data, drawers);
+      fillMajors(data, drawers);
+    } else {
+      fillPersonalInfo(data, drawers);
+      fillMajors(data, drawers);
+    }
+  } else if (data.degree === "master") {
+    if (data.type === "newRegistration") {
+      fillPersonalInfo(data, drawers);
+      fillParentsInfo(data, drawers);
+      fillAcademicInfo(data, drawers);
+      fillMajors(data, drawers);
+    } else {
+      fillPersonalInfo(data, drawers);
+      fillMajors(data, drawers);
+    }
+  }
 
   // Remove the now-empty interactive fields so their boxes don't sit on top
   // of the text we drew.

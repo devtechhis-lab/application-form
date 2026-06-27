@@ -299,6 +299,36 @@ const ParentsInfo = ({ form }: { form: any }) => {
                 </Field>
               )}
             />
+
+            {/* Guardian Address */}
+            <Controller
+              name="guardianAddress"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field
+                  className="flex-1 flex flex-col gap-1.5"
+                  data-invalid={fieldState.invalid}
+                >
+                  <FieldLabel className="text-xs font-medium text-slate-500 gap-0">
+                    Guardian's Address
+                    <span className="text-red-500 ml-0.5">*</span>
+                  </FieldLabel>
+
+                  <Input
+                    type="text"
+                    className="input"
+                    {...field}
+                    aria-invalid={fieldState.invalid}
+                    placeholder="Enter the guardian's address"
+                  />
+
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+
             <div className=" flex flex-col sm:flex-row gap-4">
               {/* Guardian Email */}
               <Controller
