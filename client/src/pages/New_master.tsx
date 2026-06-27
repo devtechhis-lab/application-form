@@ -100,7 +100,7 @@ const NewMaster = ({
   const onSubmit = async (data: any) => {
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:5000/api/v1", {
+      const res = await fetch(import.meta.env.VITE_API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(normalizeFormDates(data)),

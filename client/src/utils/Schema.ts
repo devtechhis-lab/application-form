@@ -271,7 +271,7 @@ export const ReMasMajorSchema = z
 // Full parents step (license): father + mother + guardian.
 export const LicParentsInfoSchema = z.object({
   fatherFirstName: z.string().min(1, "Father's First Name is required."),
-  fatherOccupation: z.string().optional(),
+  fatherOccupation: z.string().min(1, "Father's Occupation is required."),
   fatherPhoneNumber: z
     .string()
     .min(10, "Father's Phone Number is required.")
@@ -287,7 +287,7 @@ export const LicParentsInfoSchema = z.object({
   ),
   motherFirstName: z.string().min(1, "Mother's First Name is required."),
   motherLastName: z.string().min(1, "Mother's Last Name is required."),
-  motherOccupation: z.string().optional(),
+  motherOccupation: z.string().min(1, "Mother's Occupation is required."),
   guardianFullName: z.string().min(1, "Guardian's Full Name is required."),
   guardianRelationship: z.string().min(1, "Relationship is required."),
   guardianAddress: z.string().min(1, "Guardian's Address is required."),
@@ -385,8 +385,10 @@ const licParentsFields = [
   "fatherFirstName",
   "fatherPhoneNumber",
   "fatherEmail",
+  "fatherOccupation",
   "motherFirstName",
   "motherLastName",
+  "motherOccupation",
   "guardianFullName",
   "guardianRelationship",
   "guardianAddress",

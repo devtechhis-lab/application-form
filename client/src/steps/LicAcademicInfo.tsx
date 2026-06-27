@@ -196,7 +196,7 @@ const AcademicInfo = ({ form }: { form: any }) => {
                       type="number"
                       step={0.01}
                       min={0}
-                      max={20}
+                      max={100}
                       className="input"
                       {...field}
                       aria-invalid={fieldState.invalid}
@@ -274,7 +274,7 @@ const AcademicInfo = ({ form }: { form: any }) => {
                       type="number"
                       step={0.01}
                       min={0}
-                      max={20}
+                      max={100}
                       className="input"
                       {...field}
                       aria-invalid={fieldState.invalid}
@@ -308,7 +308,7 @@ const AcademicInfo = ({ form }: { form: any }) => {
                       type="number"
                       step={0.01}
                       min={0}
-                      max={20}
+                      max={100}
                       className="input"
                       {...field}
                       aria-invalid={fieldState.invalid}

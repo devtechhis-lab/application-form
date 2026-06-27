@@ -61,6 +61,7 @@ const ParentsInfo = ({ form }: { form: any }) => {
                 >
                   <FieldLabel className="text-xs font-medium text-slate-500 gap-0">
                     Occupation
+                    <span className="text-red-500 ml-0.5">*</span>
                   </FieldLabel>
 
                   <Input
@@ -219,6 +220,7 @@ const ParentsInfo = ({ form }: { form: any }) => {
                 >
                   <FieldLabel className="text-xs font-medium text-slate-500 gap-0">
                     Occupation
+                    <span className="text-red-500 ml-0.5">*</span>
                   </FieldLabel>
 
                   <Input
