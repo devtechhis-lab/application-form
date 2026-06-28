@@ -12,7 +12,12 @@ function SubmitSuccess({ formUrl }: { formUrl: string }) {
       <p className="text-sm text-slate-500">
         Thank you. We've received your enrolment application, you can download a
         copy of your{" "}
-        <a href={formUrl} className="text-primary-500 hover:bg-primary-600 underline">
+        <a
+          href={formUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-primary-500 hover:text-primary-600 underline"
+        >
           application form here
         </a>
         .

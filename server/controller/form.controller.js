@@ -292,11 +292,11 @@ export const newRegistration = async (req, res) => {
               formatDate(dateOfExpiration),
               formatDate(dateOfBirth),
               birthCountry,
-              addresses[birthWillaya - 1].nameAr +
-                " " +
-                "-" +
-                " " +
-                addresses[birthWillaya - 1].nameFr,
+              birthCountry === "Algeria - الجزائر"
+                ? addresses[birthWillaya - 1].nameAr +
+                  " - " +
+                  addresses[birthWillaya - 1].nameFr
+                : "",
               birthCommune,
               birthAddress,
               addresses[residenceWillaya - 1].nameAr +
@@ -370,11 +370,11 @@ export const newRegistration = async (req, res) => {
               formatDate(dateOfExpiration),
               formatDate(dateOfBirth),
               birthCountry,
-              addresses[birthWillaya - 1].nameAr +
-                " " +
-                "-" +
-                " " +
-                addresses[birthWillaya - 1].nameFr,
+              birthCountry === "Algeria - الجزائر"
+                ? addresses[birthWillaya - 1].nameAr +
+                  " - " +
+                  addresses[birthWillaya - 1].nameFr
+                : "",
               birthCommune,
               birthAddress,
               addresses[residenceWillaya - 1].nameAr +
