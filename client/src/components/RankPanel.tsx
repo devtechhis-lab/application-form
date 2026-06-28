@@ -8,7 +8,7 @@ function RankPanel({ ranked }: { ranked: any[] }) {
       <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-[#d2d8e3] bg-slate-50 px-4 py-8 text-center">
         <Trophy size={22} className="text-[#1e3c73]/40" />
         <p className="mt-2 text-xs text-slate-500">
-          Select up to three majors.
+          Select up to two majors.
           <br />
           Your ranked choices will appear here.
         </p>

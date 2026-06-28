@@ -188,7 +188,7 @@ export const newRegistration = async (req, res) => {
       });
     }
     if (type === "reRegistration" && degree === "license") {
-      await generateLicensePdf(req.body);
+      const pdfBytes = await generateLicensePdf(req.body);
       const fileBaseName = `${type}-${degree}-${lastNameLatin}-${firstNameLatin}`;
       pdfUrl = await uploadForm(pdfBytes, fileBaseName);
 
@@ -267,7 +267,7 @@ export const newRegistration = async (req, res) => {
       });
     }
     if (type === "newRegistration" && degree === "master") {
-      await generateLicensePdf(req.body);
+      const pdfBytes = await generateLicensePdf(req.body);
       const fileBaseName = `${type}-${degree}-${lastNameLatin}-${firstNameLatin}`;
       pdfUrl = await uploadForm(pdfBytes, fileBaseName);
 
@@ -345,7 +345,7 @@ export const newRegistration = async (req, res) => {
       });
     }
     if (type === "reRegistration" && degree === "master") {
-      await generateLicensePdf(req.body);
+      const pdfBytes = await generateLicensePdf(req.body);
       const fileBaseName = `${type}-${degree}-${lastNameLatin}-${firstNameLatin}`;
       pdfUrl = await uploadForm(pdfBytes, fileBaseName);
 

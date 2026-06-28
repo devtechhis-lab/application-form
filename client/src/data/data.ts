@@ -114,13 +114,12 @@ export const hsType = [
   {
     id: "3",
     label: "Baccalaureate libre",
-    value: "Baccalauréat libre - بكالوريا حرة",
+    value: "libre - حرة",
   },
   {
     id: "4",
     label: "BAC ONEFD",
-    value:
-      "BAC ONEFD (ONEFD) - بكالوريا الديوان الوطني للتعليم والتكوين عن بعد ",
+    value: "BAC ONEFD",
   },
 ];
 

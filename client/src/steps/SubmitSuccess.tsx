@@ -11,9 +11,9 @@ function SubmitSuccess({ formUrl }: { formUrl: string }) {
       </h3>
       <p className="text-sm text-slate-500">
         Thank you. We've received your enrolment application, you can download a
-        copy of your application form{" "}
-        <a href={formUrl} className="text-primary-500 hover:underline">
-          here
+        copy of your{" "}
+        <a href={formUrl} className="text-primary-500 hover:bg-primary-600 underline">
+          application form here
         </a>
         .
       </p>
