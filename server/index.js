@@ -12,7 +12,7 @@ app.use(
     origin: [
       "http://localhost:5173",
       "https://application-form-1-y61q.onrender.com",
-      "https://application-form-i4b2-aadjr77ec-his-dev.vercel.app/"
+      "https://application-form-iota-ashen.vercel.app/"
     ],
     credentials: true,
   }),
