@@ -14,6 +14,7 @@ app.use(
       "https://application-form-1-y61q.onrender.com",
       "https://application-form-iota-ashen.vercel.app"
     ],
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     credentials: true,
   }),
 );
